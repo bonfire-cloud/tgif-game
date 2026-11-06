@@ -1592,3 +1592,7 @@ kbd {
     transition: none !important;
   }
 }
+/* Keep live name tags and meeting bubbles behind the Retro. */
+.runner-game .retro {
+  z-index: 10;
+}
