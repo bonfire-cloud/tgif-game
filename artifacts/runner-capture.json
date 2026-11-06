@@ -1,0 +1,11 @@
+{
+  "url": "https://bonfire-tgif.onrender.com/room/B53390",
+  "captureRevision": "dda6a9b5c8424c9aec3e25688dc3a6e155912434",
+  "captureDate": "2026-11-06",
+  "participants": "One browser player and seven explicitly labelled QA WebSocket clients",
+  "frames": 40,
+  "durationSeconds": 7.458,
+  "encoding": "Recorded browser screenshots; resized to 960px width and palette encoded as GIF; no synthesized frames",
+  "ciRun": "https://github.com/bonfire-cloud/tgif-game/actions/runs/42204161375",
+  "renderDeploy": "dep-dbmqsb61egvs73dcb9gg"
+}

@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "url": "http://localhost:3001",
+  "room": "AA5A12",
+  "soloShipments": 1,
+  "walked": 23,
+  "maxHumans": 8,
+  "ninthSpectated": true,
+  "lateClaim": true,
+  "namePreserved": true,
+  "returnedToSolo": true,
+  "targetPreserved": true
+}

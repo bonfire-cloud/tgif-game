@@ -22,6 +22,7 @@ export class Room {
   shipped = 0;
   handoffs = 0;
   meetings = 0;
+  walked = 0;
   nextBuild = 1;
   nextEvent = 1;
   spawnClock = 0;
@@ -140,7 +141,7 @@ export class Room {
     p.inputAt = Date.now();
     return true;
   }
-  goto(id: string, x: number, y: number) {
+  goto(id: string, x: number, y: number, sprint = false) {
     const p = this.players.find((p) => p.id === id);
     if (
       !p ||
@@ -155,7 +156,7 @@ export class Room {
       x: Math.max(-5.5, Math.min(5.5, x)),
       y: Math.max(-3.3, Math.min(3.3, y)),
     };
-    p.sprinting = false;
+    p.sprinting = !!sprint;
     p.inputAt = Date.now();
     return true;
   }
@@ -182,6 +183,7 @@ export class Room {
     this.shipped = 0;
     this.handoffs = 0;
     this.meetings = 0;
+    this.walked = 0;
     this.builds = [];
     this.hazards = [];
     this.capacity = trafficFor(this.players.length);
@@ -303,6 +305,7 @@ export class Room {
         }
         const moved = Math.hypot(p.x - ox, p.y - oy);
         p.walked += moved;
+        this.walked += moved;
         if (Math.hypot(ix, iy) > 0.1) {
           p.facingX = ix;
           p.facingY = iy;
@@ -394,6 +397,7 @@ export class Room {
       shipped: this.shipped,
       handoffs: this.handoffs,
       meetings: this.meetings,
+      walked: this.walked,
       players: this.players,
       builds: this.builds,
       hazards: this.hazards,

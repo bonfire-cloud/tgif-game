@@ -208,7 +208,7 @@ function App() {
         if (cancelled || !canvas.current) return;
         office.current = createOffice(
           canvas.current,
-          (p) => send({ type: "goto", ...p }),
+          (p) => send({ type: "goto", ...p, sprint: sprintRef.current }),
           setOverlay,
         );
         if (stateRef.current)
@@ -311,8 +311,7 @@ function App() {
     next = ticket ? STATIONS[ticket.route[ticket.stamps.length]] : STATIONS[0],
     elapsed = state ? 180 - state.remaining : 0,
     clock = `${String(16 + Math.floor((57 * 60 + elapsed) / 3600)).padStart(2, "0")}:${String(Math.floor((57 * 60 + elapsed) / 60) % 60).padStart(2, "0")}:${String(Math.floor(elapsed) % 60).padStart(2, "0")}`;
-  const latest = state?.events.at(-1),
-    celebration = latest?.kind === "ship";
+  const latest = state?.events.at(-1);
   return (
     <div className={joined ? "app in-game runner-game" : "app"}>
       <header className="site-header">
@@ -505,7 +504,12 @@ function App() {
                     } as React.CSSProperties
                   }
                   onClick={() =>
-                    send({ type: "goto", x: STATIONS[i].x, y: STATIONS[i].y })
+                    send({
+                      type: "goto",
+                      x: STATIONS[i].x,
+                      y: STATIONS[i].y,
+                      sprint: sprintRef.current,
+                    })
                   }
                   disabled={desk === null || state?.phase === "finished"}
                   aria-label={`Run to ${STATIONS[i].label}`}
@@ -585,12 +589,7 @@ function App() {
                       <h3>Surprised us 💬</h3>
                       <strong>{state.meetings}</strong>
                       <p>“quick” meetings</p>
-                      <p>
-                        {Math.round(
-                          state.players.reduce((n, p) => n + p.walked, 0),
-                        )}{" "}
-                        office metres sprinted
-                      </p>
+                      <p>{Math.round(state.walked)} office metres sprinted</p>
                     </div>
                   </div>
                   <div className="retro-action">
@@ -699,9 +698,15 @@ function App() {
                       onClick={() => {
                         sprintRef.current = !sprinting;
                         setSprinting(!sprinting);
+                        if (me?.target)
+                          send({
+                            type: "goto",
+                            ...me.target,
+                            sprint: !sprinting,
+                          });
                       }}
                     >
-                      {sprinting ? "⚡ Sprint on" : "⚡ Hold Shift to sprint"}
+                      {sprinting ? "⚡ Sprint on" : "⚡ Sprint / Shift"}
                     </button>
                   </div>
                 </>

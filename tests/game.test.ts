@@ -127,3 +127,27 @@ test("empty rooms pause and rounds end in a replayable Retro", () => {
   assert.equal(r.remaining, 180);
   assert.equal(r.players[0].walked, 0);
 });
+
+test("Retro keeps the distance contributed by players who leave", () => {
+  const r = solo();
+  r.move("runner-one", 1, 0);
+  tick(r, 0.25);
+  const walked = r.snapshot().walked;
+  assert.ok(walked > 0.5);
+  r.join("runner-two", "Sara");
+  r.leave("runner-one");
+  assert.equal(r.snapshot().walked, walked);
+  r.phase = "finished";
+  r.rematch();
+  assert.equal(r.snapshot().walked, 0);
+});
+test("pointer sprint changes movement speed without teleporting", () => {
+  const walking = solo(),
+    running = solo();
+  walking.goto("runner-one", 0, -1.25);
+  running.goto("runner-one", 0, -1.25, true);
+  tick(walking, 0.2);
+  tick(running, 0.2);
+  assert.ok(running.players[0].x > walking.players[0].x + 0.2);
+  assert.ok(running.players[0].x < -3);
+});

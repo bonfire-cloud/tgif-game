@@ -117,6 +117,7 @@ export type Snapshot = {
   shipped: number;
   handoffs: number;
   meetings: number;
+  walked: number;
   players: Player[];
   builds: Build[];
   hazards: Meeting[];
@@ -126,7 +127,7 @@ export type Snapshot = {
 export type ClientMessage =
   | { type: "join"; code: string; name: string; clientId: string }
   | { type: "move"; x: number; y: number; sprint?: boolean }
-  | { type: "goto"; x: number; y: number }
+  | { type: "goto"; x: number; y: number; sprint?: boolean }
   | { type: "throw" }
   | { type: "claim" }
   | { type: "rematch" }

@@ -158,7 +158,7 @@ wss.on("connection", (ws) => {
       send(ws, { type: "welcome", clientId: c.clientId, desk: c.desk });
     }
     if (m.type === "move") c.room.move(c.clientId, m.x, m.y, m.sprint);
-    if (m.type === "goto") c.room.goto(c.clientId, m.x, m.y);
+    if (m.type === "goto") c.room.goto(c.clientId, m.x, m.y, m.sprint);
     if (m.type === "throw") c.room.toss(c.clientId);
     if (m.type === "rematch" && c.desk !== null) c.room.rematch();
     if (
