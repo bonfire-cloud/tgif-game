@@ -6,14 +6,14 @@ The supplied retro Bonfire cover promises ordinary office people becoming action
 
 ## Visual system
 
-| Token | Value | Role |
-|---|---|---|
-| Midnight plum | #251D3A | Interface, hardware shadows |
-| Office violet | #6C4C85 | Furnishings, ambient light |
-| Bonfire orange | #FF7A3D | Main actions, unapproved builds |
-| Computer beige | #F5E7CC | Table, hardware, text |
-| Windbreaker teal | #49B8B0 | Own desk, mugs, focus |
-| Terminal green | #A9D978 | Approved builds, availability, success |
+| Token            | Value   | Role                                   |
+| ---------------- | ------- | -------------------------------------- |
+| Midnight plum    | #251D3A | Interface, hardware shadows            |
+| Office violet    | #6C4C85 | Furnishings, ambient light             |
+| Bonfire orange   | #FF7A3D | Main actions, unapproved builds        |
+| Computer beige   | #F5E7CC | Table, hardware, text                  |
+| Windbreaker teal | #49B8B0 | Own desk, mugs, focus                  |
+| Terminal green   | #A9D978 | Approved builds, availability, success |
 
 Barlow Condensed carries the bold italic arcade title and results. IBM Plex Sans carries readable controls. Use a fixed orthographic Babylon.js camera, chunky CRTs, laminate table, mug bumpers, chairs, a plant and decorative Ethernet cables. Sunset shadows supply character without obscuring play. Desk status has words and indicators; build progress has explicit stamps. Reduced motion removes interface transitions. Keyboard focus remains visible.
 

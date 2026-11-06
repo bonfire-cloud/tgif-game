@@ -1,6 +1,1015 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
-:root{font-family:'IBM Plex Sans',Arial,sans-serif;color:#f5e7cc;background:#251d3a;font-synthesis:none;--ink:#251d3a;--cream:#f5e7cc;--orange:#ff7a3d;--green:#a9d978;--teal:#49b8b0;--muted:#bdafc6}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button,a,input{-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:4px}a{color:inherit}button{transition:background .15s,transform .15s}button:active:not(:disabled){transform:translateY(2px)}.app{max-width:1600px;margin:auto}.site-header{height:86px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f5e7cc22}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-size:23px;font-weight:700;font-style:italic;line-height:.88}.brand img{width:38px;height:42px}.brand-games{display:block;font-size:13px;font-weight:500;letter-spacing:2px;margin-top:5px}.header-right{display:flex;align-items:center;gap:24px}.friday-note{font-size:12px;color:var(--muted)}.quiet{background:transparent;border:1px solid #f5e7cc33;border-radius:4px;padding:9px 13px;font-size:12px;color:var(--cream)}.quiet:hover{background:#f5e7cc10}.landing{padding:48px 7% 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5%}.poster{position:relative;align-self:start;transform:rotate(-2deg);margin-top:28px}.poster img{width:100%;display:block;border:7px solid #c6ae8e;box-shadow:12px 16px 0 #15112155,0 20px 70px #0004}.poster-sticker{position:absolute;right:-18px;bottom:5%;padding:17px 20px;background:#e6cf73;color:var(--ink);font-size:13px;font-weight:600;transform:rotate(6deg);box-shadow:4px 5px 0 #0003}.edition{color:var(--muted);font-size:12px;letter-spacing:1.5px;margin-bottom:12px}.welcome h1{font:900 italic clamp(48px,5.4vw,84px)/.9 'Barlow Condensed',Impact,sans-serif;text-transform:uppercase;margin:0 0 25px;letter-spacing:-1px}.welcome h1 em{color:var(--orange);font-style:inherit}.tagline{font-size:17px;line-height:1.55;color:#f5e7ccdb;margin-bottom:25px}.game-title{font:700 28px 'Barlow Condensed',sans-serif;color:var(--orange)}.intro{font-size:14px;line-height:1.65;color:var(--muted);max-width:40ch;margin:9px 0 24px}label{display:block;font-size:12px;margin-bottom:9px}input{background:#342944;color:var(--cream);border:1px solid #7c658b;border-radius:4px;padding:13px 14px;width:100%;font-size:14px}input::placeholder{color:#baacc3}.primary{background:var(--orange);border:0;border-radius:4px;color:var(--ink);padding:13px 18px;font-weight:700;box-shadow:0 4px 0 #a34d32}.primary:hover:not(:disabled){background:#ff965f}.start{width:100%;display:flex;justify-content:space-between;margin-top:12px}.secondary{border:1px solid #8b769a;border-radius:4px;background:#3b2e4d;color:var(--cream);padding:10px 13px;font-size:12px}.secondary:hover:not(:disabled){background:#574262}.join-form{margin-top:24px}.join-form>div{display:flex;gap:10px}.join-form input{min-width:0;flex:1;letter-spacing:2px}.join-form button{white-space:nowrap}.details{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:11px;margin-top:25px}.details span:before{content:'✦';color:var(--orange);margin-right:6px}.text-button{border:0;background:none;color:var(--muted);font-size:12px;padding:14px 0;text-decoration:underline}.landing-footer{grid-column:1/-1;display:flex;justify-content:space-between;gap:20px;padding:32px 0 24px;color:#b2a2bc;font-size:11px}.error{padding:12px;color:#ffb999;font-size:13px;background:#4c2c3f;border-radius:4px}.in-game .site-header{height:66px;padding:0 28px}.game-layout{padding:24px 28px}.game-top{display:flex;justify-content:space-between;align-items:center;gap:25px;margin-bottom:20px}.game-top .edition{font-size:10px;margin:0 0 5px}.game-logo{font:900 italic 52px/.85 'Barlow Condensed',Impact,sans-serif;margin:0;color:#ffb75f;text-shadow:2px 3px 0 #100d18}.game-logo span{display:inline-block;font:600 16px 'Barlow Condensed',sans-serif;margin-left:12px;color:var(--cream);letter-spacing:.5px;text-shadow:none;vertical-align:middle}.scoreboard{display:flex;gap:24px;align-items:center}.clock{font:400 29px 'Courier New',monospace;color:var(--orange);letter-spacing:2px;padding:8px 12px;background:#171321;border:3px solid #665070;border-radius:4px;font-variant-numeric:tabular-nums}.shipping{display:flex;gap:10px;align-items:center}.shipping strong{font:800 40px 'Barlow Condensed',sans-serif;color:var(--green)}.shipping span{font-size:12px}.shipping small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.room-tools{display:flex;flex-direction:column;gap:8px;align-items:flex-end}.room-tools>span{font-size:10px;color:var(--muted)}.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px}.live-dot.offline{background:var(--orange)}.play-area{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:18px}.arena{position:relative;min-height:450px;overflow:hidden;border-radius:8px;background:#57435f;border:1px solid #8a6a89}.arena canvas{width:100%;height:100%;min-height:450px;display:block;touch-action:none;outline-offset:-4px}.table-caption{position:absolute;top:14px;left:18px;font-size:10px;color:#f5e7ccba;pointer-events:none}.desk-label{position:absolute;transform:translate(-50%,24px);display:flex;gap:6px;align-items:center;padding:5px 7px;border-radius:4px;background:#251d3ae8;border:1px solid #a99aaf;color:var(--cream);min-width:95px;white-space:nowrap;text-align:left;box-shadow:0 3px 7px #251d3a22;font-size:11px}.desk-label:active:not(:disabled){transform:translate(-50%,26px)}.desk-label:disabled{opacity:1}.desk-label b{font:700 16px 'Barlow Condensed',sans-serif;color:#bfa6cd}.desk-label span{max-width:100px;overflow:hidden;text-overflow:ellipsis}.desk-label small{display:block;font-size:8px;color:#bdafc6;margin-top:1px}.desk-label i{margin-left:auto;width:5px;height:5px;background:var(--green);border-radius:50%}.desk-label.occupied i{background:var(--orange)}.desk-label.own{border-color:var(--teal);background:#213d43}.desk-label.own b{color:var(--teal)}.dispatch{background:#30263e;border:1px solid #695277;border-radius:8px;overflow:hidden;display:flex;flex-direction:column}.dispatch-title{display:flex;justify-content:space-between;padding:13px 16px;border-bottom:1px solid #695277;font-size:12px}.dispatch-title span{color:var(--muted);font-size:10px}.build-card,.empty-outbox{padding:19px 17px 14px;text-align:center;min-height:293px}.disk-art{width:60px;height:64px;margin:0 auto 13px;background:var(--orange);border:3px solid #b35b3f;border-radius:4px 12px 4px 4px;position:relative;box-shadow:4px 4px 0 #191322}.disk-art span{position:absolute;width:34px;height:16px;background:#dbd0b7;top:-1px;left:8px;border-radius:0 0 2px 2px}.disk-art b{position:absolute;bottom:6px;left:10px;right:10px;font-size:20px;background:var(--cream);color:var(--ink)}.approved .disk-art{background:var(--green);border-color:#719a4b}.build-number{font:500 10px 'Courier New',monospace;letter-spacing:1px;color:var(--muted)}.build-card h2,.empty-outbox h2{font:700 25px 'Barlow Condensed',sans-serif;margin:6px 0 14px}.stamps{display:flex;gap:4px;justify-content:center}.stamps span{font-size:9px;border:1px dashed #8b769a;border-radius:3px;padding:5px 6px;color:#c7b7cf}.stamps .stamped{background:#a9d978;color:var(--ink);border:1px solid #a9d978}.build-card p,.empty-outbox p{font-size:11px;line-height:1.6;color:var(--muted);margin:13px 0}.deploy-button{width:100%;display:flex;justify-content:space-between;font-size:12px}.deploy-button kbd{background:#251d3a33;border:0;color:var(--ink)}kbd{font:500 11px 'IBM Plex Sans',sans-serif;border:1px solid #7d658d;border-radius:3px;padding:1px 5px}.empty-tray{font-size:64px;line-height:1;color:#8b769a;margin:10px 0 24px}.signals{display:flex;gap:6px;padding:0 14px}.signals button{font-size:10px;flex:1;padding:9px 4px}.activity{margin-top:auto;padding:12px 16px 4px;font-size:10px;color:var(--muted);min-height:90px}.activity p{margin:0 0 8px;line-height:1.35}.activity .ship{color:var(--green)}.desk-controls{display:flex;align-items:center;gap:18px;margin-top:16px}.desk-controls>span{font-size:11px;min-width:104px}.desk-controls>span small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.desk-controls>div{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px;flex:1}.desk-controls button{display:flex;align-items:center;gap:7px;min-width:0;padding:8px;background:#3b2e4d;border:1px solid #6e557d;border-radius:4px;color:var(--cream);font-size:10px}.desk-controls button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.desk-controls button.you-key{border-color:var(--teal)}.howto{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#3c304c;padding:13px 18px;border-left:3px solid var(--teal);margin-top:17px;border-radius:3px}.howto strong{font-size:12px}.howto p{font-size:11px;color:var(--muted);margin:4px 0 0;line-height:1.6}.howto button{white-space:nowrap}.connection-banner{position:absolute;top:46%;left:10%;right:10%;padding:18px;background:#251d3af5;text-align:center;border-radius:6px;font-size:13px}.results{position:absolute;inset:8% 14%;background:#251d3af5;border:1px solid #9c7f9d;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;box-shadow:0 10px 50px #0005;text-align:center}.results h2{font:900 italic clamp(30px,4vw,60px) 'Barlow Condensed',sans-serif;color:var(--orange);margin:0}.results p{font-size:15px}.results p strong{color:var(--green);font-size:24px}.results .results-detail{font-size:11px;color:var(--muted);margin:0 0 24px}.results>span{font-size:12px;color:var(--muted);margin-top:24px}
-@media(min-width:1500px){.arena,.arena canvas{min-height:560px}.landing{padding-top:70px}.welcome{max-width:470px}.poster{max-width:610px}}
-@media(max-width:1000px){.friday-note{display:none}.game-layout{padding:20px}.play-area{grid-template-columns:minmax(0,1fr) 210px;gap:12px}.game-logo span{display:block;margin:6px 0 0;font-size:13px}.clock{font-size:23px}.scoreboard{gap:14px}.desk-controls{gap:10px}.desk-controls button{justify-content:center}.desk-controls button span{display:none}.desk-label{min-width:76px;font-size:10px}.desk-label small{font-size:8px}.landing{padding:36px 5% 0;gap:6%}.poster-sticker{right:-12px;font-size:11px;padding:12px}.welcome h1{font-size:60px}}
-@media(max-width:720px){.site-header,.in-game .site-header{height:66px;padding:0 18px}.header-right{gap:8px}.header-right .quiet{padding:8px 10px;font-size:11px}.landing{display:flex;flex-direction:column;padding:28px 22px 0}.poster{order:2;max-width:440px;margin:40px auto 15px;width:90%}.welcome{order:1}.welcome h1{font-size:72px}.tagline{font-size:16px}.intro{max-width:48ch}.landing-footer{order:3;display:block;text-align:center;line-height:2}.landing-footer span{display:block}.game-layout{padding:16px 12px}.game-top{flex-wrap:wrap;gap:14px;margin-bottom:14px}.game-logo{font-size:42px}.game-top .edition{font-size:8px;letter-spacing:.5px}.game-logo span{display:inline-block;margin-left:8px;font-size:12px}.clock{font-size:19px;letter-spacing:0;padding:6px 8px}.shipping strong{font-size:28px}.shipping span{font-size:10px}.shipping small{font-size:8px}.scoreboard{gap:10px}.room-tools{flex-direction:row;width:100%;align-items:center;justify-content:space-between}.room-tools button{font-size:11px;padding:8px 12px}.play-area{display:flex;flex-direction:column}.arena,.arena canvas{min-height:360px;height:360px}.table-caption{font-size:9px;top:10px;left:10px}.desk-label{min-width:60px;padding:4px;gap:4px;font-size:9px;transform:translate(-50%,20px)}.desk-label b{font-size:13px}.desk-label small{display:none}.desk-label span{max-width:57px}.dispatch{display:block}.dispatch-title{padding:9px 13px}.build-card,.empty-outbox{min-height:0;text-align:left;position:relative;padding:13px 15px 13px 85px}.disk-art{position:absolute;left:15px;top:18px;width:51px;height:55px;margin:0}.disk-art span{width:27px;left:7px}.disk-art b{font-size:15px}.build-card h2,.empty-outbox h2{font-size:22px;margin:2px 0 9px}.build-card p{font-size:11px;margin:8px 0 12px}.stamps{justify-content:flex-start}.build-card .deploy-button{max-width:250px}.empty-tray{position:absolute;left:20px;top:6px;font-size:50px}.empty-outbox p{margin:3px 0}.signals{position:absolute;right:25px;display:none}.activity{min-height:0;padding:8px 15px;border-top:1px solid #695277;display:flex;gap:15px}.activity p{margin:0;font-size:9px}.activity p:nth-child(n+2){display:none}.desk-controls{align-items:stretch;flex-direction:column;gap:7px}.desk-controls>span{font-size:10px}.desk-controls>span small{display:inline;margin-left:8px}.desk-controls>div{gap:5px}.desk-controls button{padding:8px 3px;min-height:38px}.howto{padding:12px;gap:10px}.howto p{font-size:10px}.howto button{font-size:10px;padding:8px}.results{inset:8% 6%}.results h2{font-size:38px}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+:root {
+  font-family: "IBM Plex Sans", Arial, sans-serif;
+  color: #f5e7cc;
+  background: #251d3a;
+  font-synthesis: none;
+  --ink: #251d3a;
+  --cream: #f5e7cc;
+  --orange: #ff7a3d;
+  --green: #a9d978;
+  --teal: #49b8b0;
+  --muted: #bdafc6;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input {
+  font: inherit;
+}
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 4px;
+}
+a {
+  color: inherit;
+}
+button {
+  transition:
+    background 0.15s,
+    transform 0.15s;
+}
+button:active:not(:disabled) {
+  transform: translateY(2px);
+}
+.app {
+  max-width: 1600px;
+  margin: auto;
+}
+.site-header {
+  height: 86px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f5e7cc22;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 23px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 0.88;
+}
+.brand img {
+  width: 38px;
+  height: 42px;
+}
+.brand-games {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  margin-top: 5px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.friday-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+.quiet {
+  background: transparent;
+  border: 1px solid #f5e7cc33;
+  border-radius: 4px;
+  padding: 9px 13px;
+  font-size: 12px;
+  color: var(--cream);
+}
+.quiet:hover {
+  background: #f5e7cc10;
+}
+.landing {
+  padding: 48px 7% 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 5%;
+}
+.poster {
+  position: relative;
+  align-self: start;
+  transform: rotate(-2deg);
+  margin-top: 28px;
+}
+.poster img {
+  width: 100%;
+  display: block;
+  border: 7px solid #c6ae8e;
+  box-shadow:
+    12px 16px 0 #15112155,
+    0 20px 70px #0004;
+}
+.poster-sticker {
+  position: absolute;
+  right: -18px;
+  bottom: 5%;
+  padding: 17px 20px;
+  background: #e6cf73;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  transform: rotate(6deg);
+  box-shadow: 4px 5px 0 #0003;
+}
+.edition {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+.welcome h1 {
+  font:
+    900 italic clamp(48px, 5.4vw, 84px)/0.9 "Barlow Condensed",
+    Impact,
+    sans-serif;
+  text-transform: uppercase;
+  margin: 0 0 25px;
+  letter-spacing: -1px;
+}
+.welcome h1 em {
+  color: var(--orange);
+  font-style: inherit;
+}
+.tagline {
+  font-size: 17px;
+  line-height: 1.55;
+  color: #f5e7ccdb;
+  margin-bottom: 25px;
+}
+.game-title {
+  font:
+    700 28px "Barlow Condensed",
+    sans-serif;
+  color: var(--orange);
+}
+.intro {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 40ch;
+  margin: 9px 0 24px;
+}
+label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+input {
+  background: #342944;
+  color: var(--cream);
+  border: 1px solid #7c658b;
+  border-radius: 4px;
+  padding: 13px 14px;
+  width: 100%;
+  font-size: 14px;
+}
+input::placeholder {
+  color: #baacc3;
+}
+.primary {
+  background: var(--orange);
+  border: 0;
+  border-radius: 4px;
+  color: var(--ink);
+  padding: 13px 18px;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #a34d32;
+}
+.primary:hover:not(:disabled) {
+  background: #ff965f;
+}
+.start {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.secondary {
+  border: 1px solid #8b769a;
+  border-radius: 4px;
+  background: #3b2e4d;
+  color: var(--cream);
+  padding: 10px 13px;
+  font-size: 12px;
+}
+.secondary:hover:not(:disabled) {
+  background: #574262;
+}
+.join-form {
+  margin-top: 24px;
+}
+.join-form > div {
+  display: flex;
+  gap: 10px;
+}
+.join-form input {
+  min-width: 0;
+  flex: 1;
+  letter-spacing: 2px;
+}
+.join-form button {
+  white-space: nowrap;
+}
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 25px;
+}
+.details span:before {
+  content: "✦";
+  color: var(--orange);
+  margin-right: 6px;
+}
+.text-button {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 14px 0;
+  text-decoration: underline;
+}
+.landing-footer {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 32px 0 24px;
+  color: #b2a2bc;
+  font-size: 11px;
+}
+.error {
+  padding: 12px;
+  color: #ffb999;
+  font-size: 13px;
+  background: #4c2c3f;
+  border-radius: 4px;
+}
+.in-game .site-header {
+  height: 66px;
+  padding: 0 28px;
+}
+.game-layout {
+  padding: 24px 28px;
+}
+.game-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+.game-top .edition {
+  font-size: 10px;
+  margin: 0 0 5px;
+}
+.game-logo {
+  font:
+    900 italic 52px/0.85 "Barlow Condensed",
+    Impact,
+    sans-serif;
+  margin: 0;
+  color: #ffb75f;
+  text-shadow: 2px 3px 0 #100d18;
+}
+.game-logo span {
+  display: inline-block;
+  font:
+    600 16px "Barlow Condensed",
+    sans-serif;
+  margin-left: 12px;
+  color: var(--cream);
+  letter-spacing: 0.5px;
+  text-shadow: none;
+  vertical-align: middle;
+}
+.scoreboard {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.clock {
+  font:
+    400 29px "Courier New",
+    monospace;
+  color: var(--orange);
+  letter-spacing: 2px;
+  padding: 8px 12px;
+  background: #171321;
+  border: 3px solid #665070;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.shipping {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.shipping strong {
+  font:
+    800 40px "Barlow Condensed",
+    sans-serif;
+  color: var(--green);
+}
+.shipping span {
+  font-size: 12px;
+}
+.shipping small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.room-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+.room-tools > span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 6px;
+}
+.live-dot.offline {
+  background: var(--orange);
+}
+.play-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 18px;
+}
+.arena {
+  position: relative;
+  min-height: 450px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #57435f;
+  border: 1px solid #8a6a89;
+}
+.arena canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 450px;
+  display: block;
+  touch-action: none;
+  outline-offset: -4px;
+}
+.table-caption {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  font-size: 10px;
+  color: #f5e7ccba;
+  pointer-events: none;
+}
+.desk-label {
+  position: absolute;
+  transform: translate(-50%, 24px);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 5px 7px;
+  border-radius: 4px;
+  background: #251d3ae8;
+  border: 1px solid #a99aaf;
+  color: var(--cream);
+  min-width: 95px;
+  white-space: nowrap;
+  text-align: left;
+  box-shadow: 0 3px 7px #251d3a22;
+  font-size: 11px;
+}
+.desk-label:active:not(:disabled) {
+  transform: translate(-50%, 26px);
+}
+.desk-label:disabled {
+  opacity: 1;
+}
+.desk-label b {
+  font:
+    700 16px "Barlow Condensed",
+    sans-serif;
+  color: #bfa6cd;
+}
+.desk-label span {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.desk-label small {
+  display: block;
+  font-size: 8px;
+  color: #bdafc6;
+  margin-top: 1px;
+}
+.desk-label i {
+  margin-left: auto;
+  width: 5px;
+  height: 5px;
+  background: var(--green);
+  border-radius: 50%;
+}
+.desk-label.occupied i {
+  background: var(--orange);
+}
+.desk-label.own {
+  border-color: var(--teal);
+  background: #213d43;
+}
+.desk-label.own b {
+  color: var(--teal);
+}
+.dispatch {
+  background: #30263e;
+  border: 1px solid #695277;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.dispatch-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border-bottom: 1px solid #695277;
+  font-size: 12px;
+}
+.dispatch-title span {
+  color: var(--muted);
+  font-size: 10px;
+}
+.build-card,
+.empty-outbox {
+  padding: 19px 17px 14px;
+  text-align: center;
+  min-height: 293px;
+}
+.disk-art {
+  width: 60px;
+  height: 64px;
+  margin: 0 auto 13px;
+  background: var(--orange);
+  border: 3px solid #b35b3f;
+  border-radius: 4px 12px 4px 4px;
+  position: relative;
+  box-shadow: 4px 4px 0 #191322;
+}
+.disk-art span {
+  position: absolute;
+  width: 34px;
+  height: 16px;
+  background: #dbd0b7;
+  top: -1px;
+  left: 8px;
+  border-radius: 0 0 2px 2px;
+}
+.disk-art b {
+  position: absolute;
+  bottom: 6px;
+  left: 10px;
+  right: 10px;
+  font-size: 20px;
+  background: var(--cream);
+  color: var(--ink);
+}
+.approved .disk-art {
+  background: var(--green);
+  border-color: #719a4b;
+}
+.build-number {
+  font:
+    500 10px "Courier New",
+    monospace;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+.build-card h2,
+.empty-outbox h2 {
+  font:
+    700 25px "Barlow Condensed",
+    sans-serif;
+  margin: 6px 0 14px;
+}
+.stamps {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.stamps span {
+  font-size: 9px;
+  border: 1px dashed #8b769a;
+  border-radius: 3px;
+  padding: 5px 6px;
+  color: #c7b7cf;
+}
+.stamps .stamped {
+  background: #a9d978;
+  color: var(--ink);
+  border: 1px solid #a9d978;
+}
+.build-card p,
+.empty-outbox p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 13px 0;
+}
+.deploy-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.deploy-button kbd {
+  background: #251d3a33;
+  border: 0;
+  color: var(--ink);
+}
+kbd {
+  font:
+    500 11px "IBM Plex Sans",
+    sans-serif;
+  border: 1px solid #7d658d;
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+.empty-tray {
+  font-size: 64px;
+  line-height: 1;
+  color: #8b769a;
+  margin: 10px 0 24px;
+}
+.signals {
+  display: flex;
+  gap: 6px;
+  padding: 0 14px;
+}
+.signals button {
+  font-size: 10px;
+  flex: 1;
+  padding: 9px 4px;
+}
+.activity {
+  margin-top: auto;
+  padding: 12px 16px 4px;
+  font-size: 10px;
+  color: var(--muted);
+  min-height: 90px;
+}
+.activity p {
+  margin: 0 0 8px;
+  line-height: 1.35;
+}
+.activity .ship {
+  color: var(--green);
+}
+.desk-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 16px;
+}
+.desk-controls > span {
+  font-size: 11px;
+  min-width: 104px;
+}
+.desk-controls > span small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  margin-top: 3px;
+}
+.desk-controls > div {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 7px;
+  flex: 1;
+}
+.desk-controls button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 8px;
+  background: #3b2e4d;
+  border: 1px solid #6e557d;
+  border-radius: 4px;
+  color: var(--cream);
+  font-size: 10px;
+}
+.desk-controls button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.desk-controls button.you-key {
+  border-color: var(--teal);
+}
+.howto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: #3c304c;
+  padding: 13px 18px;
+  border-left: 3px solid var(--teal);
+  margin-top: 17px;
+  border-radius: 3px;
+}
+.howto strong {
+  font-size: 12px;
+}
+.howto p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 4px 0 0;
+  line-height: 1.6;
+}
+.howto button {
+  white-space: nowrap;
+}
+.connection-banner {
+  position: absolute;
+  top: 46%;
+  left: 10%;
+  right: 10%;
+  padding: 18px;
+  background: #251d3af5;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.results {
+  position: absolute;
+  inset: 8% 14%;
+  background: #251d3af5;
+  border: 1px solid #9c7f9d;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  box-shadow: 0 10px 50px #0005;
+  text-align: center;
+}
+.results h2 {
+  font:
+    900 italic clamp(30px, 4vw, 60px) "Barlow Condensed",
+    sans-serif;
+  color: var(--orange);
+  margin: 0;
+}
+.results p {
+  font-size: 15px;
+}
+.results p strong {
+  color: var(--green);
+  font-size: 24px;
+}
+.results .results-detail {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+.results > span {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 24px;
+}
+@media (min-width: 1500px) {
+  .arena,
+  .arena canvas {
+    min-height: 560px;
+  }
+  .landing {
+    padding-top: 70px;
+  }
+  .welcome {
+    max-width: 470px;
+  }
+  .poster {
+    max-width: 610px;
+  }
+}
+@media (max-width: 1000px) {
+  .friday-note {
+    display: none;
+  }
+  .game-layout {
+    padding: 20px;
+  }
+  .play-area {
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: 12px;
+  }
+  .game-logo span {
+    display: block;
+    margin: 6px 0 0;
+    font-size: 13px;
+  }
+  .clock {
+    font-size: 23px;
+  }
+  .scoreboard {
+    gap: 14px;
+  }
+  .desk-controls {
+    gap: 10px;
+  }
+  .desk-controls button {
+    justify-content: center;
+  }
+  .desk-controls button span {
+    display: none;
+  }
+  .desk-label {
+    min-width: 76px;
+    font-size: 10px;
+  }
+  .desk-label small {
+    font-size: 8px;
+  }
+  .landing {
+    padding: 36px 5% 0;
+    gap: 6%;
+  }
+  .poster-sticker {
+    right: -12px;
+    font-size: 11px;
+    padding: 12px;
+  }
+  .welcome h1 {
+    font-size: 60px;
+  }
+}
+@media (max-width: 720px) {
+  .site-header,
+  .in-game .site-header {
+    height: 66px;
+    padding: 0 18px;
+  }
+  .header-right {
+    gap: 8px;
+  }
+  .header-right .quiet {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .landing {
+    display: flex;
+    flex-direction: column;
+    padding: 28px 22px 0;
+  }
+  .poster {
+    order: 2;
+    max-width: 440px;
+    margin: 40px auto 15px;
+    width: 90%;
+  }
+  .welcome {
+    order: 1;
+  }
+  .welcome h1 {
+    font-size: 72px;
+  }
+  .tagline {
+    font-size: 16px;
+  }
+  .intro {
+    max-width: 48ch;
+  }
+  .landing-footer {
+    order: 3;
+    display: block;
+    text-align: center;
+    line-height: 2;
+  }
+  .landing-footer span {
+    display: block;
+  }
+  .game-layout {
+    padding: 16px 12px;
+  }
+  .game-top {
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .game-logo {
+    font-size: 42px;
+  }
+  .game-top .edition {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+  .game-logo span {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 12px;
+  }
+  .clock {
+    font-size: 19px;
+    letter-spacing: 0;
+    padding: 6px 8px;
+  }
+  .shipping strong {
+    font-size: 28px;
+  }
+  .shipping span {
+    font-size: 10px;
+  }
+  .shipping small {
+    font-size: 8px;
+  }
+  .scoreboard {
+    gap: 10px;
+  }
+  .room-tools {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .room-tools button {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+  .play-area {
+    display: flex;
+    flex-direction: column;
+  }
+  .arena,
+  .arena canvas {
+    min-height: 360px;
+    height: 360px;
+  }
+  .table-caption {
+    font-size: 9px;
+    top: 10px;
+    left: 10px;
+  }
+  .desk-label {
+    min-width: 60px;
+    padding: 4px;
+    gap: 4px;
+    font-size: 9px;
+    transform: translate(-50%, 20px);
+  }
+  .desk-label b {
+    font-size: 13px;
+  }
+  .desk-label small {
+    display: none;
+  }
+  .desk-label span {
+    max-width: 57px;
+  }
+  .dispatch {
+    display: block;
+  }
+  .dispatch-title {
+    padding: 9px 13px;
+  }
+  .build-card,
+  .empty-outbox {
+    min-height: 0;
+    text-align: left;
+    position: relative;
+    padding: 13px 15px 13px 85px;
+  }
+  .disk-art {
+    position: absolute;
+    left: 15px;
+    top: 18px;
+    width: 51px;
+    height: 55px;
+    margin: 0;
+  }
+  .disk-art span {
+    width: 27px;
+    left: 7px;
+  }
+  .disk-art b {
+    font-size: 15px;
+  }
+  .build-card h2,
+  .empty-outbox h2 {
+    font-size: 22px;
+    margin: 2px 0 9px;
+  }
+  .build-card p {
+    font-size: 11px;
+    margin: 8px 0 12px;
+  }
+  .stamps {
+    justify-content: flex-start;
+  }
+  .build-card .deploy-button {
+    max-width: 250px;
+  }
+  .empty-tray {
+    position: absolute;
+    left: 20px;
+    top: 6px;
+    font-size: 50px;
+  }
+  .empty-outbox p {
+    margin: 3px 0;
+  }
+  .signals {
+    position: absolute;
+    right: 25px;
+    display: none;
+  }
+  .activity {
+    min-height: 0;
+    padding: 8px 15px;
+    border-top: 1px solid #695277;
+    display: flex;
+    gap: 15px;
+  }
+  .activity p {
+    margin: 0;
+    font-size: 9px;
+  }
+  .activity p:nth-child(n + 2) {
+    display: none;
+  }
+  .desk-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .desk-controls > span {
+    font-size: 10px;
+  }
+  .desk-controls > span small {
+    display: inline;
+    margin-left: 8px;
+  }
+  .desk-controls > div {
+    gap: 5px;
+  }
+  .desk-controls button {
+    padding: 8px 3px;
+    min-height: 38px;
+  }
+  .howto {
+    padding: 12px;
+    gap: 10px;
+  }
+  .howto p {
+    font-size: 10px;
+  }
+  .howto button {
+    font-size: 10px;
+    padding: 8px;
+  }
+  .results {
+    inset: 8% 6%;
+  }
+  .results h2 {
+    font-size: 38px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
