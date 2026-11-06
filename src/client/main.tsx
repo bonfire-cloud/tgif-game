@@ -337,7 +337,7 @@ function App() {
             exit();
           }}
         >
-          <img src="/favicon.svg" alt="" />
+          <img src="/favicon.svg?v=8bit" alt="" />
           <span>
             Bonfire<span className="brand-games">Games</span>
           </span>
