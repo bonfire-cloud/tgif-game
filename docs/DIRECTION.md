@@ -28,3 +28,9 @@ Future cue family: Fika.exe (lobby), Pass the Build (round), One Tiny Change (fi
 ## Voice
 
 “Three approvals. One deployment slot. Everyone wants fika.” “Works on my desk.” “Auto-LGTM.” “Fresh coffee. Another round.” “Trevlig helg!” Keep operational instructions direct and put jokes in flavour text.
+
+## Runner revision
+
+The world is now an office floor with six visually distinct process stations. Workers have articulated running limbs, lanyards, different shirt colours and carried-ticket poses. Use squashing motion in station reactions, dust while running, speech bubbles for meetings, warm approval particles, green shipping confetti and big arcade callouts. Pink meeting groups roam the floor. The next station bounces and glows. A fixed camera keeps the complete route readable.
+
+The end screen is “Retro / spective”: oversized retro display lettering, Went well / Surprised us columns, and a wonky yellow action-item sticky note. It reports collective progress and jokes about process. It never singles out a coworker for failure.

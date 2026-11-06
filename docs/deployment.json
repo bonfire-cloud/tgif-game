@@ -7,11 +7,12 @@
   "region": "frankfurt",
   "plan": "free",
   "instances": 1,
-  "branch": "codex/pass-the-build",
+  "branch": "main",
   "autoDeploy": true,
   "buildCommand": "npm ci && npm run build",
   "startCommand": "npm start",
   "healthEndpoint": "/api/health",
   "healthCheck": "TCP default (HTTP endpoint verified separately)",
-  "roomPersistence": "memory; resets on deploy/restart"
+  "roomPersistence": "memory; resets on deploy/restart",
+  "autoDeployTrigger": "checksPass"
 }

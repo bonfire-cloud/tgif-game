@@ -1,29 +1,27 @@
-# TGIF: Pass the Build
+# TGIF: Run the Release
 
-Bonfire's three-minute Friday fika arcade game for 1–8 active players. A browser room stays open while colleagues join and leave. Overflow visitors spectate and can claim the next open desk.
+Bonfire's office runner for 1–8 people, three-minute rounds, late joining, and an end-of-round Retro. The first stationary passing prototype is retained in history/stationary-prototype.md. Player feedback led to this physical movement game.
 
-## Core contract
+## The loop
 
-Aim and click to slide a build, or select a desk using its button / keys 1–8. Empty desks catch automatically. Each distinct permanent desk adds one stamp. Three stamps unlock the central Deploy slot (shortcut D). A desk holds one build; occupied desks bounce incoming builds. Coffee mugs and rails support bank shots. Builds recover after a long missed volley. No player is eliminated.
+Run a little office worker with WASD or arrows. Hold Shift to sprint. Carry one ticket through its highlighted route. Reach each station and stay in its service circle for about 0.7 seconds to process it. Space throws the carried ticket forward; a free teammate catches it by getting close. Walk over dropped tickets to pick them up. Tap/click floor movement is available for touch and mouse play.
 
-The eight desk positions exist throughout a session. Vacant desks are Auto-LGTM terminals: stamp, wait briefly, then return the build to a free human desk, preferring its sender. They never create or deploy builds or pass to other helpers. Stamp identity belongs to the desk, independent of its occupant.
+PO provides tickets. Station vocabulary: PO, Requirements, Refinement, Build, Review, Deploy. Each ticket has a readable route, shown in the HUD. Features take the full route; hotfixes skip the early meetings; scope-creep tickets reverse some planning steps. The next station has a bouncing arrow and highlighted sign. A station can process one ticket at a time.
 
-## Solo
+## Friction and comedy
 
-Two circulating builds create a routing and timing challenge. Send to terminal A, receive back, send to terminal B, receive back, deploy. The player's starting stamp counts. The player performs the decisions and final shot. Solo starts immediately and shares the same simulation as multiplayer.
+Pink roaming “Quick sync?” groups briefly stop a runner. A four-second immunity window allows escape. Giant coffee mugs are physical obstacles. Sprinting, route choice, station queues and thrown hand-offs create the challenge. There is no elimination, personal blame meter or separate repair minigame.
 
-## Scaling and transitions
+## Solo and dynamic multiplayer
 
-Traffic starts at two builds and changes at most one step every six seconds toward a cap of 2–5 based on current humans. Departures reduce replenishment; airborne builds survive. Joining claims an empty terminal with all its held / incoming builds intact. Leaving delegates that desk to a helper. A full room admits spectators. No human host owns the round. Empty rooms pause and expire after fifteen minutes.
+All stations run automatically, so one human can finish the challenge without bots or coworkers. Rounds begin immediately. Up to eight players join the ongoing simulation as running characters; nobody owns the room as a host. Each new player gets a ticket when capacity allows. On departure, their held ticket drops at their last position with its route progress intact. A full room supports spectators who can claim the next open slot. Empty rooms pause and expire after fifteen minutes.
 
-## Round and scoring
+Ticket capacity approaches current humans + 1, bounded at 2–10, changing gradually every five seconds. Existing tickets survive departures. The target stays fixed during a round: five initially, then max(5, 3 × humans) on rematch.
 
-The clock runs 16:57 → 17:00 (180 seconds). The first solo shipping target is eight. A rematch chooses max(8, 4 × current humans). Targets stay fixed during a round. Players can keep scoring beyond the target. Results show shared shipments, banked shipments and recovered builds; no personal blame or cross-roster leaderboard.
+## The Retro
 
-## Onboarding
+16:57 → 17:00. Keep shipping beyond the target. Characters celebrate at the end. The Retro shows “Went well” (shipments, hand-offs), “Surprised us” (meetings, metres run), and a cheeky action item for next Friday. Start another sprint from the same room.
 
-“Catch. Stamp. Pass. Ship.” The UI shows each desk's availability, the held build's three stamps, live room size, room invitation link, and explicit deployment readiness. Music starts muted and is user controlled. Keyboard desk buttons provide an alternative to spatial aiming.
+## Feedback
 
-## Playtest questions
-
-Is the first solo shipment understandable without explanation? Are helper return delays readable? Does 1 → 8 → 1 preserve builds, stamps, timer and useful control? Does occupancy generate conversation? Tune traffic, catch radius and target before adding new rules.
+Running limbs, body bounce, carried-ticket pose, dust, roaming meeting groups, speech bubbles, station rings, next-stop arrow, processing progress, approval particles, shipping confetti, arcade callouts and a loud Retro reveal. Music and synthesized event sounds are user controlled and start muted. Reduced motion suppresses decorative effects.

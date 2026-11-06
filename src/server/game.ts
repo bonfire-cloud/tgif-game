@@ -1,7 +1,7 @@
 import {
   BUMPERS,
-  DEPLOY,
-  DESKS,
+  STATIONS,
+  TICKET_TEMPLATES,
   ROUND_SECONDS,
   distance,
   trafficFor,
@@ -9,17 +9,19 @@ import {
   type GameEvent,
   type Player,
   type Snapshot,
+  type Meeting,
 } from "../shared/game.js";
 export class Room {
   players: Player[] = [];
   builds: Build[] = [];
   events: GameEvent[] = [];
+  hazards: Meeting[] = [];
   phase: "playing" | "finished" = "playing";
   remaining = ROUND_SECONDS;
-  target = 8;
+  target = 5;
   shipped = 0;
-  rollbacks = 0;
-  banks = 0;
+  handoffs = 0;
+  meetings = 0;
   nextBuild = 1;
   nextEvent = 1;
   spawnClock = 0;
@@ -28,126 +30,172 @@ export class Room {
   lastActive = Date.now();
   started = false;
   constructor(public code: string) {}
-  event(text: string, kind: GameEvent["kind"] = "info") {
-    this.events.push({ id: this.nextEvent++, text, kind });
-    this.events = this.events.slice(-5);
+  event(
+    text: string,
+    kind: GameEvent["kind"] = "info",
+    point?: { x: number; y: number },
+  ) {
+    this.events.push({
+      id: this.nextEvent++,
+      text,
+      kind,
+      ...(point ? { x: point.x, y: point.y } : {}),
+    });
+    this.events = this.events.slice(-8);
   }
   join(id: string, name: string): number | null {
-    const existing = this.players.find((p) => p.id === id);
-    if (existing) {
-      existing.name = name;
-      return existing.desk;
+    const old = this.players.find((p) => p.id === id);
+    if (old) {
+      old.name = name;
+      return old.desk;
     }
-    const desk = DESKS.find((d) => !this.players.some((p) => p.desk === d.id));
-    if (!desk) return null;
-    this.players.push({ id, name, desk: desk.id });
+    const slot = Array.from({ length: 8 }, (_, i) => i).find(
+      (i) => !this.players.some((p) => p.desk === i),
+    );
+    if (slot === undefined) return null;
+    const p: Player = {
+      id,
+      name,
+      desk: slot,
+      x: -4.2 + (slot % 3) * 0.35,
+      y: -1.25 + Math.floor(slot / 3) * 0.3,
+      vx: 0,
+      vy: 0,
+      facingX: 1,
+      facingY: 0,
+      sprinting: false,
+      stun: 0,
+      immunity: 2,
+      walked: 0,
+      meetings: 0,
+      target: null,
+      inputAt: Date.now(),
+    };
+    this.players.push(p);
     this.lastActive = Date.now();
     if (!this.started) {
       this.started = true;
-      this.target = 8;
-      this.spawn();
+      this.spawn(p);
+    } else if (this.builds.length < trafficFor(this.players.length)) {
+      this.spawn(p);
     }
-    this.event(`${name} clocked in at desk ${desk.id + 1}.`, "join");
-    return desk.id;
+    this.event(`${name} ran into the office!`, "join", p);
+    return slot;
   }
   leave(id: string) {
     const p = this.players.find((p) => p.id === id);
     if (!p) return;
+    const b = this.held(p.desk);
+    if (b) {
+      b.held = null;
+      b.x = p.x;
+      b.y = p.y;
+      b.vx = b.vy = 0;
+      b.sender = -1;
+    }
     this.players = this.players.filter((p) => p.id !== id);
     this.lastActive = Date.now();
-    this.event(`${p.name} left Auto-LGTM in charge.`, "join");
-  }
-  held(desk: number) {
-    return this.builds.find((b) => b.held === desk);
-  }
-  spawn() {
-    const free = this.players.filter(
-      (p) =>
-        !this.held(p.desk) &&
-        !this.builds.some((b) => b.returningTo === p.desk),
+    this.event(
+      `${p.name} headed for fika. Their ticket is up for grabs.`,
+      "join",
+      p,
     );
-    if (!free.length) return;
-    const p = free[(this.nextBuild - 1) % free.length],
-      d = DESKS[p.desk];
+  }
+  held(slot: number) {
+    return this.builds.find((b) => b.held === slot);
+  }
+  spawn(owner?: Player) {
+    const template =
+      TICKET_TEMPLATES[(this.nextBuild - 1) % TICKET_TEMPLATES.length];
+    const slot = (this.nextBuild - 1) % 3;
     this.builds.push({
       id: this.nextBuild++,
-      x: d.x,
-      y: d.y,
+      title: template.title,
+      route: [...template.route],
+      stamps: [0],
+      held: owner && !this.held(owner.desk) ? owner.desk : null,
+      x: owner?.x ?? -4.5 + slot * 0.4,
+      y: owner?.y ?? -1.65,
       vx: 0,
       vy: 0,
-      stamps: [d.id],
-      held: d.id,
-      sender: d.id,
-      age: 0,
-      flight: 0,
-      wait: 0,
-      banked: false,
-      returningTo: null,
+      sender: -1,
+      flight: 2,
+      progress: 0,
     });
   }
-  pass(id: string, x: number, y: number) {
+  move(id: string, x: number, y: number, sprint = false) {
+    const p = this.players.find((p) => p.id === id);
     if (
+      !p ||
+      this.phase !== "playing" ||
+      !Number.isFinite(x) ||
+      !Number.isFinite(y)
+    )
+      return false;
+    const len = Math.max(1, Math.hypot(x, y));
+    p.vx = x / len;
+    p.vy = y / len;
+    p.sprinting = !!sprint;
+    p.target = null;
+    p.inputAt = Date.now();
+    return true;
+  }
+  goto(id: string, x: number, y: number) {
+    const p = this.players.find((p) => p.id === id);
+    if (
+      !p ||
       this.phase !== "playing" ||
       !Number.isFinite(x) ||
       !Number.isFinite(y) ||
-      Math.abs(x) > 20 ||
-      Math.abs(y) > 20
+      Math.abs(x) > 8 ||
+      Math.abs(y) > 6
     )
       return false;
-    const p = this.players.find((p) => p.id === id);
-    if (!p) return false;
-    const b = this.held(p.desk);
-    if (!b) return false;
-    return this.launch(b, x, y, p.desk);
-  }
-  launch(b: Build, x: number, y: number, sender: number) {
-    let dx = x - b.x,
-      dy = y - b.y;
-    const len = Math.hypot(dx, dy);
-    if (len < 0.05) return false;
-    dx /= len;
-    dy /= len;
-    b.vx = dx * 5;
-    b.vy = dy * 5;
-    b.held = null;
-    b.returningTo = null;
-    b.sender = sender;
-    b.flight = 0;
-    b.wait = 0;
-    b.x += dx * 0.75;
-    b.y += dy * 0.75;
+    p.target = {
+      x: Math.max(-5.5, Math.min(5.5, x)),
+      y: Math.max(-3.3, Math.min(3.3, y)),
+    };
+    p.sprinting = false;
+    p.inputAt = Date.now();
     return true;
   }
-  catch(b: Build, desk: number) {
-    const d = DESKS[desk];
-    b.held = desk;
-    b.returningTo = null;
-    b.x = d.x;
-    b.y = d.y;
-    b.vx = b.vy = 0;
-    b.wait = 0;
+  toss(id: string) {
+    const p = this.players.find((p) => p.id === id);
+    if (!p || this.phase !== "playing" || p.stun > 0) return false;
+    const b = this.held(p.desk);
+    if (!b) return false;
+    b.held = null;
+    b.x = p.x + p.facingX * 0.6;
+    b.y = p.y + p.facingY * 0.6;
+    b.vx = p.facingX * 7;
+    b.vy = p.facingY * 7;
+    b.sender = p.desk;
     b.flight = 0;
-    if (!b.stamps.includes(desk)) {
-      b.stamps.push(desk);
-      this.event(
-        `Build #${b.id}: ${Math.min(3, b.stamps.length)}/3 approvals.`,
-        "stamp",
-      );
-    }
+    b.progress = 0;
+    this.event(`${p.name}: catch!`, "throw", p);
+    return true;
   }
   rematch() {
     if (this.phase !== "finished") return false;
-    this.builds = [];
+    this.phase = "playing";
     this.remaining = ROUND_SECONDS;
     this.shipped = 0;
-    this.rollbacks = 0;
-    this.banks = 0;
-    this.phase = "playing";
+    this.handoffs = 0;
+    this.meetings = 0;
+    this.builds = [];
+    this.hazards = [];
     this.capacity = trafficFor(this.players.length);
-    this.target = Math.max(8, this.players.length * 4);
+    this.target = Math.max(5, this.players.length * 3);
     this.spawnClock = 0;
-    this.event("Fresh coffee. Fresh release.", "info");
-    this.spawn();
+    for (const p of this.players) {
+      p.x = -4.2 + (p.desk % 3) * 0.4;
+      p.y = -1.2 + Math.floor(p.desk / 3) * 0.3;
+      p.vx = p.vy = p.stun = p.walked = p.meetings = 0;
+      p.target = null;
+      p.immunity = 2;
+      this.spawn(p);
+    }
+    this.event("Action item: ship it before the next retro.");
     return true;
   }
   update(dt: number) {
@@ -157,140 +205,185 @@ export class Room {
     this.remaining = Math.max(0, this.remaining - dt);
     if (this.remaining === 0) {
       this.phase = "finished";
-      this.event("17:00. Trevlig helg!", "ship");
+      for (const p of this.players) {
+        p.vx = p.vy = 0;
+        p.target = null;
+      }
+      this.event("17:00. Time for the Retro!", "ship", { x: 0, y: 0 });
       return;
     }
+    const elapsed = ROUND_SECONDS - this.remaining;
+    this.hazards =
+      elapsed < 5
+        ? []
+        : [
+            {
+              id: 0,
+              x: Math.sin(elapsed * 0.46) * 2.9,
+              y: Math.cos(elapsed * 0.31) * 0.95,
+              r: 0.86,
+              label: "Quick sync?",
+            },
+            ...(this.players.length >= 4
+              ? [
+                  {
+                    id: 1,
+                    x: Math.cos(elapsed * 0.38 + 2) * 3.1,
+                    y: Math.sin(elapsed * 0.43) * 1.2,
+                    r: 0.8,
+                    label: "Got a minute?",
+                  },
+                ]
+              : []),
+          ];
     this.trafficClock += dt;
-    if (this.trafficClock >= 6) {
+    if (this.trafficClock >= 5) {
       this.trafficClock = 0;
-      const desired = trafficFor(this.players.length);
-      this.capacity += Math.sign(desired - this.capacity);
+      this.capacity += Math.sign(
+        trafficFor(this.players.length) - this.capacity,
+      );
     }
     this.spawnClock += dt;
-    if (this.spawnClock > 1.5 && this.builds.length < this.capacity) {
+    if (this.spawnClock > 2 && this.builds.length < this.capacity) {
       this.spawn();
       this.spawnClock = 0;
     }
-    for (const b of [...this.builds]) {
-      b.age += dt;
-      if (b.held !== null) {
-        b.wait += dt;
-        if (!this.players.some((p) => p.desk === b.held) && b.wait > 1.25) {
-          const preferred = this.players.find((p) => p.desk === b.sender);
-          const candidates = preferred
-            ? [preferred, ...this.players.filter((p) => p !== preferred)]
-            : this.players;
-          const target = candidates.find(
-            (p) =>
-              !this.held(p.desk) &&
-              !this.builds.some(
-                (other) =>
-                  other !== b &&
-                  other.held === null &&
-                  other.returningTo === p.desk,
-              ),
-          );
-          if (target) {
-            const d = DESKS[target.desk];
-            this.launch(b, d.x, d.y, b.held);
-            b.returningTo = target.desk;
+    const occupiedStations = new Set<number>();
+    for (const p of this.players) {
+      p.immunity = Math.max(0, p.immunity - dt);
+      p.stun = Math.max(0, p.stun - dt);
+      let ix = p.vx,
+        iy = p.vy;
+      if (p.target) {
+        const dx = p.target.x - p.x,
+          dy = p.target.y - p.y,
+          len = Math.hypot(dx, dy);
+        if (len < 0.1) {
+          p.target = null;
+          ix = iy = 0;
+        } else {
+          ix = dx / len;
+          iy = dy / len;
+          // Tap-to-move steers around mug bumpers; keyboard movement stays fully manual.
+          for (const mug of BUMPERS) {
+            const dx = mug.x - p.x,
+              dy = mug.y - p.y,
+              projection = dx * ix + dy * iy,
+              cross = dx * iy - dy * ix;
+            if (
+              projection > 0 &&
+              projection < 1.2 &&
+              Math.abs(cross) < mug.r + 0.35
+            ) {
+              const sign = cross >= 0 ? 1 : -1;
+              const nx = -iy * sign,
+                ny = ix * sign;
+              ix = ix * 0.35 + nx * 0.9;
+              iy = iy * 0.35 + ny * 0.9;
+              break;
+            }
           }
         }
-        continue;
+      } else if (Date.now() - p.inputAt > 450) ix = iy = 0;
+      if (p.stun <= 0) {
+        const speed = p.sprinting ? 5.1 : 3.5,
+          ox = p.x,
+          oy = p.y;
+        p.x = Math.max(-5.45, Math.min(5.45, p.x + ix * speed * dt));
+        p.y = Math.max(-3.3, Math.min(3.3, p.y + iy * speed * dt));
+        for (const mug of BUMPERS) {
+          const d = distance(p, mug),
+            r = mug.r + 0.22;
+          if (d < r) {
+            const nx = (p.x - mug.x) / (d || 1),
+              ny = (p.y - mug.y) / (d || 1);
+            p.x = mug.x + nx * r;
+            p.y = mug.y + ny * r;
+          }
+        }
+        const moved = Math.hypot(p.x - ox, p.y - oy);
+        p.walked += moved;
+        if (Math.hypot(ix, iy) > 0.1) {
+          p.facingX = ix;
+          p.facingY = iy;
+        }
       }
+      if (
+        p.immunity === 0 &&
+        this.hazards.some((h) => distance(p, h) < h.r + 0.13)
+      ) {
+        p.stun = 1.0;
+        p.immunity = 4.2;
+        p.meetings++;
+        this.meetings++;
+        this.event(
+          `${p.name} got ambushed by a “quick” meeting!`,
+          "meeting",
+          p,
+        );
+      }
+      let b = this.held(p.desk);
+      if (!b) {
+        b = this.builds.find(
+          (b) =>
+            b.held === null &&
+            distance(b, p) < 0.65 &&
+            (b.sender !== p.desk || b.flight > 0.8),
+        );
+        if (b) {
+          if (b.sender >= 0 && b.sender !== p.desk) {
+            this.handoffs++;
+            this.event("Clean hand-off!", "stamp", p);
+          }
+          b.held = p.desk;
+          b.vx = b.vy = 0;
+          b.progress = 0;
+        }
+      }
+      if (!b) continue;
+      b.x = p.x;
+      b.y = p.y;
+      const next = b.route[b.stamps.length],
+        station = STATIONS[next];
+      if (
+        station &&
+        distance(p, station) < 0.95 &&
+        p.stun === 0 &&
+        !occupiedStations.has(next)
+      ) {
+        occupiedStations.add(next);
+        b.progress += dt;
+        const dwell = next === 5 ? 0.42 : 0.72;
+        if (b.progress >= dwell) {
+          b.progress = 0;
+          if (next === 5) {
+            this.shipped++;
+            this.builds = this.builds.filter((v) => v !== b);
+            this.event(`${b.title}: SHIPPED!`, "ship", p);
+          } else {
+            b.stamps.push(next);
+            this.event(`${station.label}: ${station.verb}!`, "stamp", p);
+          }
+        }
+      } else b.progress = 0;
+    }
+    for (const b of this.builds) {
+      if (b.held !== null) continue;
       b.flight += dt;
       b.x += b.vx * dt;
       b.y += b.vy * dt;
+      const friction = Math.exp(-dt * 3);
+      b.vx *= friction;
+      b.vy *= friction;
       if (Math.abs(b.x) > 5.45) {
         b.x = Math.sign(b.x) * 5.45;
-        b.vx *= -1;
-        b.banked = true;
+        b.vx *= -0.6;
       }
-      if (Math.abs(b.y) > 3.22) {
-        b.y = Math.sign(b.y) * 3.22;
-        b.vy *= -1;
-        b.banked = true;
-      }
-      if (distance(b, DEPLOY) < DEPLOY.r) {
-        if (b.stamps.length >= 3) {
-          this.shipped++;
-          if (b.banked) this.banks++;
-          this.builds = this.builds.filter((x) => x !== b);
-          this.event(
-            `Build #${b.id} shipped!${b.banked ? " Bank shot!" : ""}`,
-            "ship",
-          );
-          continue;
-        }
-        this.reflect(b, DEPLOY.x, DEPLOY.y, DEPLOY.r + 0.1);
-        this.event("Deploy needs three different desk stamps.", "info");
-      }
-      for (const mug of BUMPERS) {
-        if (distance(b, mug) < mug.r + 0.16) {
-          this.reflect(b, mug.x, mug.y, mug.r + 0.18);
-          b.banked = true;
-        }
-      }
-      for (const d of DESKS) {
-        if (d.id === b.sender && b.flight < 0.4) continue;
-        if (distance(b, d) < 0.64) {
-          if (!this.held(d.id)) {
-            this.catch(b, d.id);
-          } else {
-            this.reflect(b, d.x, d.y, 0.81);
-            b.banked = true;
-          }
-          break;
-        }
-      }
-      if (b.held === null && b.flight > 12) {
-        const free = this.players.find((p) => !this.held(p.desk));
-        if (free) {
-          this.catch(b, free.desk);
-          this.rollbacks++;
-          this.event(`Build #${b.id} recovered. Keep passing!`, "info");
-        }
+      if (Math.abs(b.y) > 3.3) {
+        b.y = Math.sign(b.y) * 3.3;
+        b.vy *= -0.6;
       }
     }
-    // Gentle equal-mass collisions keep simultaneous traffic physical and legible.
-    for (let i = 0; i < this.builds.length; i++)
-      for (let j = i + 1; j < this.builds.length; j++) {
-        const a = this.builds[i],
-          b = this.builds[j];
-        if (a.held !== null || b.held !== null) continue;
-        const dx = b.x - a.x,
-          dy = b.y - a.y,
-          len = Math.hypot(dx, dy);
-        if (len > 0.01 && len < 0.34) {
-          const nx = dx / len,
-            ny = dy / len,
-            rel = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
-          if (rel > 0) {
-            a.vx -= rel * nx;
-            a.vy -= rel * ny;
-            b.vx += rel * nx;
-            b.vy += rel * ny;
-            a.banked = b.banked = true;
-          }
-          const sep = (0.34 - len) / 2;
-          a.x -= nx * sep;
-          a.y -= ny * sep;
-          b.x += nx * sep;
-          b.y += ny * sep;
-        }
-      }
-  }
-  reflect(b: Build, x: number, y: number, r: number) {
-    const dx = b.x - x,
-      dy = b.y - y,
-      len = Math.hypot(dx, dy) || 1,
-      nx = dx / len,
-      ny = dy / len;
-    const dot = b.vx * nx + b.vy * ny;
-    b.vx -= 2 * dot * nx;
-    b.vy -= 2 * dot * ny;
-    b.x = x + nx * r;
-    b.y = y + ny * r;
   }
   snapshot(): Snapshot {
     return {
@@ -299,10 +392,11 @@ export class Room {
       remaining: this.remaining,
       target: this.target,
       shipped: this.shipped,
-      rollbacks: this.rollbacks,
-      banks: this.banks,
+      handoffs: this.handoffs,
+      meetings: this.meetings,
       players: this.players,
       builds: this.builds,
+      hazards: this.hazards,
       events: this.events,
       capacity: this.capacity,
     };

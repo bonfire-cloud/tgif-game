@@ -152,7 +152,9 @@ wss.on("connection", (ws) => {
       c.desk = c.room.join(c.clientId, c.name);
       send(ws, { type: "welcome", clientId: c.clientId, desk: c.desk });
     }
-    if (m.type === "pass") c.room.pass(c.clientId, m.x, m.y);
+    if (m.type === "move") c.room.move(c.clientId, m.x, m.y, m.sprint);
+    if (m.type === "goto") c.room.goto(c.clientId, m.x, m.y);
+    if (m.type === "throw") c.room.toss(c.clientId);
     if (m.type === "rematch" && c.desk !== null) c.room.rematch();
     if (
       m.type === "ping" &&
@@ -162,7 +164,7 @@ wss.on("connection", (ws) => {
       const p = c.room.players.find((p) => p.id === c.clientId);
       if (p)
         c.room.event(
-          `${p.name}: ${m.signal === "ready" ? "Send it my way!" : "Hands full!"}`,
+          `${p.name}: ${m.signal === "ready" ? "Catch!" : "Carrying a ticket!"}`,
           "info",
         );
     }

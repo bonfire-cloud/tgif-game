@@ -1,33 +1,39 @@
-# TGIF: Pass the Build 🔥
+# TGIF: Run the Release 🔥
 
 Play: https://bonfire-tgif.onrender.com
 
-Bonfire's Friday fika arcade game. Get three different desk stamps, then ship before 17:00. Start alone; up to eight colleagues can join the same ongoing room.
+Bonfire's Friday office runner. Grab a ticket, run through PO / Requirements / Refinement / Build / Review / Deploy, dodge “quick” meetings, and survive the Retro. Start solo; up to eight people can join the same ongoing room.
 
-## Run
+## Run locally
 
-Node 22.12+ (recommended Node 24), npm.
+Node 24 and npm:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. Start a room and copy its invitation link. Empty desks review and return your builds, so one player can complete a round. Aim and click, select a desk button, or use keys 1–8. Press D to deploy a build with three stamps. Music starts muted.
+Open http://localhost:5173. Move with **WASD / arrows**, hold **Shift** to sprint, **Space** to throw a ticket. Stations work when reached. Tap/click the floor to move with a pointer. Music starts muted.
 
 ```sh
 npm test
 npm run build
 npm start
+npx tsx tests/network.ts
 ```
 
-Production serves http://localhost:3001; PORT overrides the port. Health: /api/health. The same server handles /ws. Runtime rooms are ephemeral and reset on restart.
+Production serves http://localhost:3001 (PORT overrides it). Health: /api/health. WebSocket: /ws. Runtime rooms reset on restart.
 
-## Design and delivery
+## CI and deployment
 
-- [Gameplay contract](docs/GAMEPLAY.md)
-- [Art and soundtrack direction](docs/DIRECTION.md)
-- [Plan, architecture and validation](docs/PLAN.md)
-- [Verification evidence](docs/VERIFICATION.md)
+Push to main → GitHub Actions tests + build + real WebSocket scenario → Render deploys after CI passes. Pull requests run checks. Render tracks main with autoDeployTrigger=checksPass. The service configuration is recorded in docs/deployment.json.
 
-Original user-provided cover in images/. Original synthesized music sketch and its generator are included. React + TypeScript + Babylon.js + Node + WebSockets; Render deployment targets one instance.
+## Design and evidence
+
+- [Gameplay](docs/GAMEPLAY.md)
+- [Art and soundtrack](docs/DIRECTION.md)
+- [Architecture and plan](docs/PLAN.md)
+- [Verification](docs/VERIFICATION.md)
+- [Original stationary prototype](docs/history/stationary-prototype.md)
+
+TypeScript, React, Babylon.js, Node and WebSockets. User-provided cover artwork and an original synthesized soundtrack sketch are included.

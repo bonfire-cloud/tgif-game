@@ -1,32 +1,34 @@
-# Delivery plan and architecture
+# Delivery and architecture
 
-## Accepted scope
+## Current scope
 
-Persist design and planning; deliver a real TypeScript browser multiplayer game; host on Render; capture visual proof from the deployed address. Support solo, eight humans, late joining, departures, reconnect and replay.
+A physical office runner replaces the stationary desk-passing prototype after user playtest feedback. Requirements: 1–8 humans; solo completion; late join; leave/rejoin; meaningful movement and hand-offs; office-process stations; animations; Retro results. Preserve the retro Bonfire cover and original music. Merge to main and deploy automatically after CI passes.
 
-## Components
+## Ownership
 
-- src/shared/game.ts: geometry and network contracts.
-- src/server/game.ts: authoritative room simulation at 30 Hz; permanent desk ownership; helper automation; collisions; stamps; scoring; adaptive traffic.
-- src/server/index.ts: Express static assets, room creation, health endpoint, WebSocket sessions, snapshots around 15 Hz, heartbeat and room expiry.
-- src/client/scene.ts: Babylon.js office diorama and puck interpolation.
-- src/client/main.tsx: React lobby, name/code joining, HUD, invite link, outbox, keyboard controls, audio and reconnect.
+- src/shared/game.ts: station geometry, ticket routes, player / event / network contracts.
+- src/server/game.ts: authoritative movement, sprinting, station proximity and dwell, queues, meeting hazards, physical throwing and pickup, scoring, room lifecycle.
+- src/server/index.ts: Express, WebSocket sessions and snapshots, rate/payload limits, heartbeat and idle cleanup.
+- src/client/scene.ts: Babylon office floor, station models, articulated avatars, carried tickets, particles, meeting groups, projected labels.
+- src/client/main.tsx: React joining, input lifecycle, camera overlays, mission HUD, sound and Retro.
 
-A single Node service serves the client and WebSockets. It binds 0.0.0.0 and PORT. Room state is in memory: deploys/restarts clear rooms. One instance is intentional; scaling to multiple instances requires room routing and shared state. No database or account is needed for the office game.
+One Node service serves both client and WebSockets. It binds 0.0.0.0:PORT. Runtime rooms are in memory and reset on deploy/restart. One instance is intentional; multiple instances would require room-aware routing and shared coordination.
+
+## Release pipeline
+
+main is the release branch. GitHub Actions runs simulation tests, TypeScript, Vite build and a real WebSocket test. Render tracks main with autoDeployTrigger=checksPass, so only successful CI revisions deploy. Pull requests run the same checks without changing the live game. No deploy secrets are stored in source.
 
 ## Validation gates
 
-1. TypeScript and production build.
-2. Simulation tests: legal stamps, solo shipment, late takeover, departure, traffic ramp, fixed target, finished round, input validation.
-3. Real WebSocket integration: one client, eight clients, ninth spectator, departure and spectator claim, malformed / unauthorized actions.
-4. Local browser: lobby, enter room, 3D rendering, routing, stamps, deploy, responsive controls.
-5. Git source pushed to deployment branch; Render live deploy at matching commit.
-6. Remote health, socket integration, browser gameplay and screenshots with deployed URL.
+- Solo can ship the target by physically visiting stations.
+- Station orders cannot be completed remotely by sending a destination.
+- Movement is bounded, normalized and finite; sprint is server owned.
+- Throwing / catching preserves progress, including departure drops.
+- A single ongoing round supports 1 → 8 → spectator → claim → 1.
+- Meetings interrupt briefly, with escape immunity.
+- Empty rooms pause; finished rounds produce a replayable Retro.
+- Browser checks cover rendering, actual keyboard movement, route progress and remote deployment.
 
-## Release tradeoffs
+## Remaining tuning
 
-Initial capacity: eight active seats, additional spectators. No competitive cross-roster leaderboard. Gameplay requires a modern WebGL-capable browser, with desk buttons retained when rendering fails. Sound is an original rough concept cue. Room persistence and seamless adaptive music are later work.
-
-## Deployment
-
-Use the existing bonfire-cloud/tgif-game Git remote, branch codex/pass-the-build. Render single Node web service in Frankfurt, smallest available compute plan. Build npm ci && npm run build; start npm start; health /api/health. Workspace requires explicit selection. Check .node-version and package-lock.json for reproducible runtime inputs.
+Tune running speed, station dwell, meeting paths and ticket routes with real coworkers. Music currently repeats the original 35-second concept cue rather than an adaptive seamless score. Tap-to-move avoids mugs locally; manual keyboard movement gives full control. No persistent scores or accounts.

@@ -1,28 +1,22 @@
-// Manual visual QA fixture: seven explicit test participants join an existing room.
-// Usage: TEST_URL=https://... npx tsx tests/visual-room.ts ABCDEF
+// Manual visual QA: seven named test runners join an existing room for two minutes.
 import { WebSocket } from "ws";
 import { randomUUID } from "node:crypto";
-import {
-  DESKS,
-  DEPLOY,
-  distance,
-  type ServerMessage,
-} from "../src/shared/game.js";
+import { STATIONS, type ServerMessage } from "../src/shared/game.js";
 const base = process.env.TEST_URL || "http://localhost:3001",
   code = process.argv[2];
-if (!code) throw Error("Provide an existing room code");
+if (!code) throw Error("Provide a room code");
 const clients: WebSocket[] = [];
 for (let i = 2; i <= 8; i++) {
   const ws = new WebSocket(base.replace(/^http/, "ws") + "/ws");
   clients.push(ws);
   let desk: number | null = null,
-    last = 0;
+    target = -1;
   ws.on("open", () =>
     ws.send(
       JSON.stringify({
         type: "join",
         code,
-        name: `QA guest ${i}`,
+        name: `QA runner ${i}`,
         clientId: randomUUID(),
       }),
     ),
@@ -30,30 +24,27 @@ for (let i = 2; i <= 8; i++) {
   ws.on("message", (raw) => {
     const m = JSON.parse(raw.toString()) as ServerMessage;
     if (m.type === "welcome") desk = m.desk;
-    if (m.type !== "state" || desk === null) return;
-    const s = m.state,
-      b = s.builds.find((b) => b.held === desk);
-    if (!b || s.phase !== "playing" || Date.now() - last < 450) return;
-    const next =
-      b.stamps.length >= 3
-        ? DEPLOY
-        : DESKS.filter(
-            (d) =>
-              d.id !== desk &&
-              !b.stamps.includes(d.id) &&
-              !s.builds.some((b) => b.held === d.id),
-          ).sort((a, c) => distance(a, b) - distance(c, b))[0];
-    if (next) {
-      last = Date.now();
-      ws.send(JSON.stringify({ type: "pass", x: next.x, y: next.y }));
+    if (m.type !== "state" || desk === null || m.state.phase !== "playing")
+      return;
+    const b = m.state.builds.find((b) => b.held === desk),
+      next = b ? b.route[b.stamps.length] : 0;
+    if (next !== target) {
+      target = next;
+      ws.send(
+        JSON.stringify({
+          type: "goto",
+          x: STATIONS[next].x,
+          y: STATIONS[next].y,
+        }),
+      );
     }
   });
   ws.on("error", console.error);
 }
-console.log("Seven QA participants connecting to", code, "at", base);
+console.log("Seven QA runners joining", code);
 const stop = () => {
-  clients.forEach((ws) => ws.close());
-  setTimeout(() => process.exit(0), 300).unref();
+  clients.forEach((c) => c.close());
+  setTimeout(() => process.exit(0), 250).unref();
 };
 setTimeout(stop, 120000);
 process.on("SIGINT", stop);
