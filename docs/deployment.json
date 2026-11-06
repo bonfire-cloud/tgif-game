@@ -1,0 +1,17 @@
+{
+  "provider": "render",
+  "serviceId": "srv-dbmpcoc9v7es73adjb7g",
+  "workspaceId": "tea-dbd4kc2fngtc73fj0s50",
+  "url": "https://bonfire-tgif.onrender.com",
+  "dashboard": "https://dashboard.render.com/web/srv-dbmpcoc9v7es73adjb7g",
+  "region": "frankfurt",
+  "plan": "free",
+  "instances": 1,
+  "branch": "codex/pass-the-build",
+  "autoDeploy": true,
+  "buildCommand": "npm ci && npm run build",
+  "startCommand": "npm start",
+  "healthEndpoint": "/api/health",
+  "healthCheck": "TCP default (HTTP endpoint verified separately)",
+  "roomPersistence": "memory; resets on deploy/restart"
+}

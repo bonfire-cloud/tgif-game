@@ -1,5 +1,7 @@
 # TGIF: Pass the Build 🔥
 
+Play: https://bonfire-tgif.onrender.com
+
 Bonfire's Friday fika arcade game. Get three different desk stamps, then ship before 17:00. Start alone; up to eight colleagues can join the same ongoing room.
 
 ## Run
