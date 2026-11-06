@@ -25,10 +25,16 @@ The final evidence / tuning commit runs the same pipeline. GitHub Actions owns d
 
 ## Practical limits
 
-Free Render hosting can cold-start after inactivity. Rooms are in memory and reset on restart / deploy. The music is the original rough 35-second cue, currently looping. Gameplay balance still benefits from a Friday playtest with real coworkers.
+Free Render hosting can cold-start after inactivity. Rooms are in memory and reset on restart / deploy. Gameplay balance still benefits from a Friday playtest with real coworkers.
 
 ## Controller and sync-patrol update
 
 The suite now has 22 checks. Controller tests use simulated standard Gamepad API samples: all screen directions, analog speed, diagonal limits, dead zone, malformed axes, D-pad, held sprint, single-press throw / rematch, sparse device slots, unplug / reconnect / focus resets, and feeding decoded controls through the real server movement and throwing contract. Light stick pressure changes walking speed without weakening throws. Physical hardware is a manual check.
 
 Patrol tests cover all six stations and both side aisles, smooth bounded movement, interruption of campers at every station, chasing outer-lane carriers, immunity / escape, five-second grace, staggered multiplayer routes and rematch reset. Solo challenge completion still passes under the revised hazards. Browser QA confirmed keyboard fallback still moves the character, the revised ghost can catch a player near PO, controller instructions render correctly, and no warning/error logs were reported.
+
+## 8-bit presentation update
+
+The suite now has 26 checks. Four additional checks cover deterministic audio generation, non-silent bounded signals, exact zero score / effect boundaries, distinct effects, quantized amplitude, and station / player identities within the fixed sixteen-colour palette. TypeScript and production build pass.
+
+Local production browser QA confirms the palette shader compiles without warnings or errors; pixel fonts load; clicking the low-resolution canvas reaches Requirements and advances the route to Refinement; CHIP ON activates successfully; and the full Retro renders. The 390-pixel phone layout has no horizontal overflow and keeps the mission and controls readable. The soundtrack preview is regenerated from the same synthesizer as the game with npm run audio:preview. Public deployment continues through the main-branch CI gates described above.

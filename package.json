@@ -11,7 +11,8 @@
     "build": "tsc --noEmit && vite build && tsc -p tsconfig.server.json",
     "start": "node dist/server/server/index.js",
     "test": "tsx --test tests/*.test.ts",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "audio:preview": "tsx scripts/render-chip-preview.ts"
   },
   "dependencies": {
     "@babylonjs/core": "^9.34.0",

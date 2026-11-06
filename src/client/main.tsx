@@ -9,47 +9,11 @@ import {
 } from "../shared/game.js";
 import type { createOffice, Overlay } from "./scene.js";
 import { ControllerInput } from "./controller.js";
+import { chipAudio } from "./audio.js";
 import "./style.css";
 const pathCode = () =>
   location.pathname.match(/^\/room\/([a-f0-9]{6})\/?$/i)?.[1].toUpperCase() ||
   "";
-const music = new Audio("/audio/friday-release.mp3");
-music.loop = true;
-music.volume = 0.25;
-let audio: AudioContext | null = null;
-function effect(kind: string) {
-  try {
-    audio ??= new AudioContext();
-    if (audio.state === "suspended") void audio.resume();
-    const notes =
-      kind === "ship"
-        ? [523, 659, 784, 1047]
-        : kind === "meeting"
-          ? [330, 277, 220]
-          : kind === "throw"
-            ? [440, 660]
-            : [660, 880];
-    notes.forEach((hz, i) => {
-      const o = audio!.createOscillator(),
-        g = audio!.createGain();
-      o.type = kind === "meeting" ? "triangle" : "sine";
-      o.frequency.value = hz;
-      g.gain.setValueAtTime(0, audio!.currentTime + i * 0.07);
-      g.gain.linearRampToValueAtTime(
-        0.06,
-        audio!.currentTime + i * 0.07 + 0.008,
-      );
-      g.gain.exponentialRampToValueAtTime(
-        0.001,
-        audio!.currentTime + i * 0.07 + 0.18,
-      );
-      o.connect(g);
-      g.connect(audio!.destination);
-      o.start(audio!.currentTime + i * 0.07);
-      o.stop(audio!.currentTime + i * 0.07 + 0.2);
-    });
-  } catch {}
-}
 function App() {
   const [code, setCode] = useState(pathCode()),
     [name, setName] = useState(localStorage.getItem("tgif-name") || ""),
@@ -118,8 +82,6 @@ function App() {
   }
   useEffect(() => {
     soundRef.current = sound;
-    if (sound) music.play().catch(() => setSound(false));
-    else music.pause();
   }, [sound]);
   useEffect(() => {
     const pop = () => {
@@ -175,7 +137,11 @@ function App() {
                 soundRef.current &&
                 ["stamp", "ship", "meeting", "throw"].includes(e.kind)
               )
-                effect(e.kind);
+                chipAudio.effect(
+                  e.kind === "ship" && m.state.phase === "finished"
+                    ? "retro"
+                    : e.kind,
+                );
           }
           lastEvent.current = m.state.events.at(-1)?.id || 0;
         }
@@ -206,7 +172,8 @@ function App() {
     if (!joined || !canvas.current) return;
     let cancelled = false;
     void import("./scene.js")
-      .then(({ createOffice }) => {
+      .then(async ({ createOffice }) => {
+        await document.fonts.load('8px "Press Start 2P"').catch(() => []);
         if (cancelled || !canvas.current) return;
         office.current = createOffice(
           canvas.current,
@@ -379,10 +346,18 @@ function App() {
           <span className="friday-note">Less process. More running.</span>
           <button
             className="quiet"
-            onClick={() => setSound((v) => !v)}
+            onClick={() => {
+              const enabled = !sound;
+              soundRef.current = enabled;
+              setSound(enabled);
+              void chipAudio.setEnabled(enabled).catch(() => {
+                soundRef.current = false;
+                setSound(false);
+              });
+            }}
             aria-pressed={sound}
           >
-            {sound ? "♫ Sound on" : "♪ Sound off"}
+            {sound ? "♫ CHIP ON" : "♪ CHIP OFF"}
           </button>
           {joined && (
             <button className="quiet" onClick={() => setHelp((v) => !v)}>
@@ -592,7 +567,7 @@ function App() {
                   className={`meeting-label ${state?.hazards[i]?.chasing ? "chasing" : ""}`}
                   style={{ left: p.x + "%", top: p.y + "%" }}
                 >
-                  💬 {state?.hazards[i]?.label}
+                  [!] {state?.hazards[i]?.label}
                 </span>
               ))}
               {latest && (
@@ -602,11 +577,11 @@ function App() {
                   aria-live="polite"
                 >
                   {latest.kind === "ship"
-                    ? "🚀 "
+                    ? ">> "
                     : latest.kind === "meeting"
-                      ? "💬 "
+                      ? "[!] "
                       : latest.kind === "stamp"
-                        ? "✦ "
+                        ? "+ "
                         : ""}
                   {latest.text}
                 </div>
@@ -629,13 +604,13 @@ function App() {
                   </p>
                   <div className="retro-columns">
                     <div>
-                      <h3>Went well ✦</h3>
+                      <h3>Went well +</h3>
                       <strong>{state.shipped}</strong>
                       <p>things actually shipped</p>
                       <p>{state.handoffs} clean hand-offs</p>
                     </div>
                     <div>
-                      <h3>Surprised us 💬</h3>
+                      <h3>Surprised us ?</h3>
                       <strong>{state.meetings}</strong>
                       <p>“quick” meetings</p>
                       <p>{Math.round(state.walked)} office metres sprinted</p>

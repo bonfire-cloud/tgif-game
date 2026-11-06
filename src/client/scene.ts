@@ -14,6 +14,10 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator.
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent.js";
 import "@babylonjs/core/Culling/ray.js";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture.js";
+import { Texture } from "@babylonjs/core/Materials/Textures/texture.js";
+import { Effect } from "@babylonjs/core/Materials/effect.js";
+import { PostProcess } from "@babylonjs/core/PostProcesses/postProcess.js";
+import { arcadeColour, PALETTE_FRAGMENT } from "./retro.js";
 import {
   AVATAR_COLORS,
   BUMPERS,
@@ -31,13 +35,13 @@ export function createOffice(
   onMove: (point: Point) => void,
   onProject: (points: Overlay) => void,
 ) {
-  const engine = new Engine(canvas, true, {
+  const engine = new Engine(canvas, false, {
     preserveDrawingBuffer: true,
     stencil: true,
   });
-  engine.setHardwareScalingLevel(devicePixelRatio > 1.5 ? 1.25 : 1);
+  engine.setHardwareScalingLevel(3);
   const scene = new Scene(engine);
-  scene.clearColor = Color4.FromHexString("#4c3a63ff");
+  scene.clearColor = Color4.FromHexString("#0b0b2bff");
   const camera = new FreeCamera(
     "office-camera",
     new Vector3(0, 14, -10),
@@ -45,22 +49,35 @@ export function createOffice(
   );
   camera.setTarget(new Vector3(0, 0.1, 0));
   camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
+  Effect.ShadersStore["bonfire8BitFragmentShader"] = PALETTE_FRAGMENT;
+  new PostProcess(
+    "bonfire-16-colours",
+    "bonfire8Bit",
+    null,
+    null,
+    1,
+    camera,
+    Texture.NEAREST_SAMPLINGMODE,
+    engine,
+  );
   const ambient = new HemisphericLight("ambient", new Vector3(0, 1, 0), scene);
-  ambient.intensity = 0.7;
-  ambient.groundColor = Color3.FromHexString("#74608b");
+  ambient.intensity = 0.85;
+  ambient.groundColor = Color3.FromHexString("#1d2b53");
   const sun = new DirectionalLight(
     "friday-sunset",
     new Vector3(-0.5, -1, 0.6),
     scene,
   );
   sun.position.set(8, 12, -7);
-  sun.intensity = 1.05;
-  sun.diffuse = Color3.FromHexString("#ffcf9e");
-  const shadows = new ShadowGenerator(1024, sun);
-  shadows.useBlurExponentialShadowMap = true;
-  shadows.blurKernel = 24;
+  sun.intensity = 0.7;
+  sun.diffuse = Color3.FromHexString("#fff1e8");
+  const shadows = new ShadowGenerator(512, sun);
+  shadows.bias = 0.0005;
+  shadows.normalBias = 0.02;
+  shadows.setDarkness(0.45);
   const mats = new Map<string, StandardMaterial>();
   function material(color: string, glow = 0, alpha = 1) {
+    color = arcadeColour(color);
     const key = color + glow + alpha;
     if (mats.has(key)) return mats.get(key)!;
     const m = new StandardMaterial(key, scene);
@@ -71,13 +88,13 @@ export function createOffice(
     mats.set(key, m);
     return m;
   }
-  const ink = material("#251d3a"),
-    cream = material("#f5e7cc"),
-    beige = material("#bea48e"),
-    orange = material("#ff7a3d"),
-    green = material("#a9d978", 0.25),
-    teal = material("#49b8b0"),
-    coffee = material("#744130");
+  const ink = material("#0b0b2b"),
+    cream = material("#fff1e8"),
+    beige = material("#d9c7a3"),
+    orange = material("#ff8b28"),
+    green = material("#a7f070", 0.25),
+    teal = material("#28c8a8"),
+    coffee = material("#ab8d6f");
   function box(
     name: string,
     x: number,
@@ -111,7 +128,7 @@ export function createOffice(
   ) {
     const m = MeshBuilder.CreateCylinder(
       name,
-      { diameter: r * 2, height: h, tessellation: 24 },
+      { diameter: r * 2, height: h, tessellation: 8 },
       scene,
     );
     m.position.set(x, y, z);
@@ -127,9 +144,9 @@ export function createOffice(
     r: number,
     mat: StandardMaterial,
   ) {
-    const m = MeshBuilder.CreateSphere(
+    const m = MeshBuilder.CreateBox(
       name,
-      { diameter: r * 2, segments: 8 },
+      { width: r * 2, height: r * 2, depth: r * 2 },
       scene,
     );
     m.position.set(x, y, z);
@@ -146,7 +163,7 @@ export function createOffice(
     11.8,
     0.14,
     7.4,
-    material("#86728d"),
+    material("#1d2b53"),
   );
   for (let x = -5; x <= 5; x++)
     for (let z = -3; z <= 3; z++) {
@@ -159,7 +176,7 @@ export function createOffice(
           0.98,
           0.008,
           0.98,
-          material("#917f96"),
+          material("#0b0b2b"),
           false,
         );
     }
@@ -260,24 +277,25 @@ export function createOffice(
     }
     const marker = MeshBuilder.CreateTorus(
       "station-ring",
-      { diameter: 1.75, thickness: 0.055, tessellation: 32 },
+      { diameter: 1.75, thickness: 0.055, tessellation: 8 },
       scene,
     );
     marker.position.set(s.x, 0.05, s.y);
     marker.material = m;
     const signTexture = new DynamicTexture(
       "sign-" + s.id,
-      { width: 512, height: 128 },
+      { width: 128, height: 32 },
       scene,
       false,
+      Texture.NEAREST_SAMPLINGMODE,
     );
     signTexture.drawText(
       s.label.toUpperCase(),
       null,
-      87,
-      "bold 52px monospace",
+      21,
+      '8px "Press Start 2P"',
       s.color,
-      "#251d3a",
+      "#0b0b2b",
       true,
     );
     const sm = new StandardMaterial("sign-material-" + s.id, scene);
@@ -297,7 +315,7 @@ export function createOffice(
     cyl("coffee", mug.x, 0.635, mug.y, mug.r * 0.8, 0.012, coffee);
     const handle = MeshBuilder.CreateTorus(
       "coffee-handle",
-      { diameter: 0.4, thickness: 0.09, tessellation: 16 },
+      { diameter: 0.4, thickness: 0.09, tessellation: 8 },
       scene,
     );
     handle.position.set(mug.x + 0.42, 0.34, mug.y);
@@ -307,17 +325,18 @@ export function createOffice(
   // Centre aisle and a wonky motivational floor decal.
   const ft = new DynamicTexture(
     "fika-decal",
-    { width: 768, height: 256 },
+    { width: 128, height: 32 },
     scene,
     false,
+    Texture.NEAREST_SAMPLINGMODE,
   );
   ft.drawText(
     "SHIP HAPPENS.",
     null,
-    150,
-    "bold italic 78px monospace",
-    "#c9b2ca",
-    "#86728d",
+    21,
+    '8px "Press Start 2P"',
+    "#5b6c8f",
+    "#1d2b53",
     true,
   );
   const fm = new StandardMaterial("decal", scene);
@@ -377,7 +396,7 @@ export function createOffice(
         0.15,
         0.36,
         0.18,
-        material("#45576b"),
+        material("#29adff"),
       );
       leg.parent = joint;
       const shoe = box("sneaker", 0, -0.34, -0.05, 0.18, 0.1, 0.28, cream);
@@ -409,7 +428,7 @@ export function createOffice(
         0.07 + Math.random() * 0.05,
         0.05,
         0.08,
-        material(i % 3 === 0 ? "#f5e7cc" : color, 0.3),
+        material(i % 3 === 0 ? "#fff1e8" : color, 0.3),
         false,
       );
       particles.push({
@@ -460,6 +479,10 @@ export function createOffice(
     });
   }
   function resize() {
+    // Integer enlargement produces stable, visible pixels on desktop and phones.
+    engine.setHardwareScalingLevel(
+      Math.max(2, Math.ceil(canvas.clientWidth / 384)),
+    );
     engine.resize();
     const ratio = canvas.clientWidth / canvas.clientHeight,
       span = Math.max(3.65, 6.75 / ratio);
@@ -507,30 +530,31 @@ export function createOffice(
         const moving = Vector3.Distance(old, a.root.position) > 0.002;
         const speed = p.sprinting ? 18 : 12;
         a.phase += dt * speed;
+        const pose = reduced
+          ? a.phase
+          : (Math.floor((a.phase / speed) * 12) / 12) * speed;
         a.root.position.y =
           moving && !reduced
-            ? Math.abs(Math.sin(a.phase)) * 0.07
+            ? Math.abs(Math.sin(pose)) * 0.07
             : Math.sin(time * 2 + p.desk) * 0.013;
         a.root.rotation.y = Math.atan2(-p.facingX, -p.facingY);
         a.root.rotation.z = p.stun > 0 ? Math.sin(time * 22) * 0.12 : 0;
         const carried = state.builds.some((b) => b.held === p.desk);
         a.legs.forEach(
           (leg, i) =>
-            (leg.rotation.x = moving
-              ? Math.sin(a.phase + i * Math.PI) * 0.7
-              : 0),
+            (leg.rotation.x = moving ? Math.sin(pose + i * Math.PI) * 0.7 : 0),
         );
         a.arms.forEach(
           (arm, i) =>
             (arm.rotation.x = carried
               ? -1.25
               : moving
-                ? -Math.sin(a.phase + i * Math.PI) * 0.7
+                ? -Math.sin(pose + i * Math.PI) * 0.7
                 : Math.sin(time * 2 + i) * 0.05),
         );
         if (moving && !reduced && time - lastStep > 0.12) {
           lastStep = time;
-          burst(p.x, p.y, 1, "#c9b2ca");
+          burst(p.x, p.y, 1, "#5b6c8f");
         }
       }
       for (const [slot, a] of actors)
@@ -578,7 +602,7 @@ export function createOffice(
             0,
             h.r,
             0.04,
-            material("#e378b5", 0.2, 0.24),
+            material("#ff77a8", 0.2, 0.24),
           );
           ring.parent = root;
           for (let i = 0; i < 3; i++) {
@@ -591,7 +615,7 @@ export function createOffice(
               z,
               0.15,
               0.48,
-              material("#a381b7"),
+              material("#a94faa"),
             );
             body.parent = root;
             const head = sphere("meeting-head", x, 0.83, z, 0.18, beige);
@@ -673,11 +697,11 @@ export function createOffice(
       for (const event of next.events) {
         if (event.id <= lastEvent) continue;
         if (event.x !== undefined && event.y !== undefined) {
-          if (event.kind === "ship") burst(event.x, event.y, 65, "#a9d978");
+          if (event.kind === "ship") burst(event.x, event.y, 65, "#a7f070");
           else if (event.kind === "stamp")
-            burst(event.x, event.y, 24, "#ffcf72");
+            burst(event.x, event.y, 24, "#ffec27");
           else if (event.kind === "meeting")
-            burst(event.x, event.y, 16, "#e378b5");
+            burst(event.x, event.y, 16, "#ff77a8");
         }
       }
       lastEvent = next.events.at(-1)?.id || lastEvent;

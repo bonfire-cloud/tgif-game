@@ -2,7 +2,7 @@
 
 ## Current scope
 
-A physical office runner replaces the stationary desk-passing prototype after user playtest feedback. Requirements: 1–8 humans; solo completion; late join; leave/rejoin; meaningful movement and hand-offs; office-process stations; animations; Retro results. Preserve the retro Bonfire cover and original music. Merge to main and deploy automatically after CI passes.
+A physical office runner replaces the stationary desk-passing prototype after user playtest feedback. Requirements: 1–8 humans; solo completion; late join; leave/rejoin; meaningful movement and hand-offs; office-process stations; animations; Retro results. Preserve the retro Bonfire cover. The presentation now uses pixel-rendered 3D, a sixteen-colour palette, self-hosted pixel fonts and an original procedural chiptune. Main deploys automatically after CI passes.
 
 ## Ownership
 
@@ -11,6 +11,8 @@ A physical office runner replaces the stationary desk-passing prototype after us
 - src/server/index.ts: Express, WebSocket sessions and snapshots, rate/payload limits, heartbeat and idle cleanup.
 - src/client/scene.ts: Babylon office floor, station models, articulated avatars, carried tickets, particles, meeting groups, projected labels.
 - src/client/main.tsx: React joining, input lifecycle, camera overlays, mission HUD, sound and Retro.
+- src/client/retro.ts: scene palette and the final quantization / dithering pass.
+- src/client/chip-synth.ts and audio.ts: deterministic PCM score / effects and browser audio lifecycle.
 
 One Node service serves both client and WebSockets. It binds 0.0.0.0:PORT. Runtime rooms are in memory and reset on deploy/restart. One instance is intentional; multiple instances would require room-aware routing and shared coordination.
 
@@ -28,7 +30,9 @@ main is the release branch. GitHub Actions runs simulation tests, TypeScript, Vi
 - Meetings interrupt briefly, with escape immunity.
 - Empty rooms pause; finished rounds produce a replayable Retro.
 - Browser checks cover rendering, actual keyboard movement, route progress and remote deployment.
+- Pixel rendering preserves pointer accuracy; desktop and phone controls remain readable.
+- Chip score and effects are deterministic, non-silent, bounded and click-free at their boundaries.
 
 ## Remaining tuning
 
-Tune running speed, station dwell, meeting paths and ticket routes with real coworkers. Music currently repeats the original 35-second concept cue rather than an adaptive seamless score. Tap-to-move avoids mugs locally; manual keyboard movement gives full control. No persistent scores or accounts.
+Tune running speed, station dwell, meeting paths and ticket routes with real coworkers. The chip score loops seamlessly; adaptive musical layers remain a possible follow-up. Tap-to-move avoids mugs locally; manual keyboard and controller movement give full control. Physical gamepad hardware still needs a manual check. No persistent scores or accounts.

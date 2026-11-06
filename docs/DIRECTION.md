@@ -6,24 +6,28 @@ The supplied retro Bonfire cover promises ordinary office people becoming action
 
 ## Visual system
 
-| Token            | Value   | Role                                   |
-| ---------------- | ------- | -------------------------------------- |
-| Midnight plum    | #251D3A | Interface, hardware shadows            |
-| Office violet    | #6C4C85 | Furnishings, ambient light             |
-| Bonfire orange   | #FF7A3D | Main actions, unapproved builds        |
-| Computer beige   | #F5E7CC | Table, hardware, text                  |
-| Windbreaker teal | #49B8B0 | Own desk, mugs, focus                  |
-| Terminal green   | #A9D978 | Approved builds, availability, success |
+The current direction is a late-1980s cartridge game. See [the detailed style guide](RETRO-STYLE.md). The office stays 3D for movement, depth, shadows and animation; its output is rendered at low resolution, enlarged in integer steps and quantized to sixteen colours. Cube heads, block limbs, faceted mugs, hard shadows and twelve-frame-per-second running poses give the models a sprite-like silhouette.
 
-Barlow Condensed carries the bold italic arcade title and results. IBM Plex Sans carries readable controls. Use a fixed orthographic Babylon.js camera, chunky CRTs, laminate table, mug bumpers, chairs, a plant and decorative Ethernet cables. Sunset shadows supply character without obscuring play. Desk status has words and indicators; build progress has explicit stamps. Reduced motion removes interface transitions. Keyboard focus remains visible.
+| Token          | Value   | Role                           |
+| -------------- | ------- | ------------------------------ |
+| Cartridge navy | #0B0B2B | Backgrounds and outlines        |
+| Cabinet blue   | #1D2B53 | Panels and office floor         |
+| Bonfire orange | #FF8B28 | Tickets, build and fire         |
+| Coin yellow    | #FFEC27 | Main actions and PO             |
+| Hot pink       | #FF77A8 | Refinement and meeting warnings |
+| Phosphor cyan  | #29ADFF | Frames, focus and Deploy        |
+| Terminal green | #A7F070 | Review, progress and success    |
+| CRT cream      | #FFF1E8 | Hardware and primary text       |
+
+Press Start 2P carries display titles and station labels; VT323 carries controls, dialogue and status. Fonts are self-hosted in public/fonts with their SIL Open Font License files, sourced from the official google/fonts repository (ofl/pressstart2p and ofl/vt323). Square frames, flat colours and hard offset shadows extend the pixel world into the interface. Controls remain at browser resolution for readability. Station status has words and indicators; ticket progress has explicit stamps. Reduced motion removes interface transitions. Keyboard focus remains visible.
 
 The supplied cover remains the lobby's visual anchor. It is user-provided reference artwork; retain its provenance in images/ and the delivery asset at public/images/friday-cover.png.
 
 ## Soundtrack
 
-Original synthesized concept cue: 116 BPM, D major, FM comping, bouncy bass, restrained drum-machine groove and a bright melodic hook. No external samples. public/audio/friday-release.mp3 is the 35.5-second playable sketch; docs/soundtrack-synthesis.py is the reproducible synthesis source. The sketch currently repeats as background music and has an audible ending; a seamless adaptive production loop remains future polish.
+The active score is an original 132 BPM, D-major chiptune: two pulse-style voices, sixteen-level triangle bass, and fifteen-bit LFSR noise drums. The eight-bar loop has exact zero boundaries and quantized amplitude. Coin approvals, shipping arpeggios, throw zaps, descending meeting phrases and a Retro fanfare use the same synthesizer. No external samples. Music and effects start muted behind the CHIP toggle; conversation takes priority.
 
-Future cue family: Fika.exe (lobby), Pass the Build (round), One Tiny Change (final thirty seconds), 17:00 (success). Short synthesized approval / shipping tones are enabled with the music toggle. Default muted; conversation takes priority.
+src/client/chip-synth.ts is the reproducible source. Run npm run audio:preview to regenerate artifacts/8bit-score.wav from the actual game loop. The previous FM concept sketch remains at public/audio/friday-release.mp3 with docs/soundtrack-synthesis.py as historical material; the game no longer plays it. Adaptive layers for the final thirty seconds remain future polish.
 
 ## Voice
 

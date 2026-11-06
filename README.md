@@ -15,6 +15,8 @@ npm run dev
 
 Open http://localhost:5173. Move with **WASD / arrows**, hold **Shift** to sprint, **Space** to throw a ticket. Stations work when reached. Tap/click the floor to move with a pointer. Standard gamepads: **left stick** moves, **RT/R2** sprints, **A/Cross** throws, **Menu/Options** starts the next round. Press a controller button once to make it visible to the browser. Music starts muted.
 
+The office uses pixel-rendered 3D, a fixed sixteen-colour palette and self-hosted Press Start 2P / VT323 fonts. Turn **CHIP ON** for the original pulse / triangle / noise-channel score and arcade effects. Generate the same soundtrack as a WAV with `npm run audio:preview`.
+
 ```sh
 npm test
 npm run build
@@ -32,8 +34,9 @@ Push to main → GitHub Actions tests + build + real WebSocket scenario → the 
 
 - [Gameplay](docs/GAMEPLAY.md)
 - [Art and soundtrack](docs/DIRECTION.md)
+- [8-bit style guide](docs/RETRO-STYLE.md)
 - [Architecture and plan](docs/PLAN.md)
 - [Verification](docs/VERIFICATION.md)
 - [Original stationary prototype](docs/history/stationary-prototype.md)
 
-TypeScript, React, Babylon.js, Node and WebSockets. User-provided cover artwork and an original synthesized soundtrack sketch are included.
+TypeScript, React, Babylon.js, Node and WebSockets. User-provided cover artwork and an original synthesized chiptune are included. Font licenses are in public/fonts.
