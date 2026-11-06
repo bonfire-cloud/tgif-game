@@ -8,11 +8,14 @@
   "plan": "free",
   "instances": 1,
   "branch": "main",
-  "autoDeploy": true,
+  "autoDeploy": false,
   "buildCommand": "npm ci && npm run build",
   "startCommand": "npm start",
   "healthEndpoint": "/api/health",
   "healthCheck": "TCP default (HTTP endpoint verified separately)",
   "roomPersistence": "memory; resets on deploy/restart",
-  "autoDeployTrigger": "checksPass"
+  "autoDeployTrigger": "off",
+  "deploymentOwner": "GitHub Actions deploy job",
+  "deploySecret": "RENDER_DEPLOY_HOOK_URL (encrypted GitHub repository secret; value never in source)",
+  "verification": "Public /api/health revision must match tested GITHUB_SHA"
 }

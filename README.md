@@ -26,7 +26,7 @@ Production serves http://localhost:3001 (PORT overrides it). Health: /api/health
 
 ## CI and deployment
 
-Push to main → GitHub Actions tests + build + real WebSocket scenario → Render deploys after CI passes. Pull requests run checks. Render tracks main with autoDeployTrigger=checksPass. The service configuration is recorded in docs/deployment.json.
+Push to main → GitHub Actions tests + build + real WebSocket scenario → the deploy job triggers Render and waits for the exact commit to become live. Pull requests run checks. GitHub Actions deploys the exact tested main commit through its encrypted Render deploy-hook secret, then waits for the public health revision to match. The service configuration is recorded in docs/deployment.json.
 
 ## Design and evidence
 

@@ -23,7 +23,12 @@ const sockets = new Map<
 app.disable("x-powered-by");
 app.use(express.json({ limit: "2kb" }));
 app.get("/api/health", (_req, res) =>
-  res.json({ ok: true, game: "pass-the-build", rooms: rooms.size }),
+  res.json({
+    ok: true,
+    game: "run-the-release",
+    revision: process.env.RENDER_GIT_COMMIT || "local",
+    rooms: rooms.size,
+  }),
 );
 const creates = new Map<string, { at: number; count: number }>();
 app.post("/api/rooms", (req, res) => {

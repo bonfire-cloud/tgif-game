@@ -16,7 +16,7 @@ One Node service serves both client and WebSockets. It binds 0.0.0.0:PORT. Runti
 
 ## Release pipeline
 
-main is the release branch. GitHub Actions runs simulation tests, TypeScript, Vite build and a real WebSocket test. Render tracks main with autoDeployTrigger=checksPass, so only successful CI revisions deploy. Pull requests run the same checks without changing the live game. No deploy secrets are stored in source.
+main is the release branch. GitHub Actions runs simulation tests, TypeScript, Vite build and a real WebSocket test. GitHub Actions deploys the exact tested main commit through its encrypted Render deploy-hook secret, then waits for the public health revision to match, so only successful CI revisions deploy. Pull requests run the same checks without changing the live game. No deploy secrets are stored in source.
 
 ## Validation gates
 
