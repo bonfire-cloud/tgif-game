@@ -1596,3 +1596,10 @@ kbd {
 .runner-game .retro {
   z-index: 10;
 }
+.meeting-label.chasing {
+  background: #ff96d1;
+  color: #422044;
+  box-shadow:
+    0 0 0 2px #f5e7ccaa,
+    2px 3px 0 #5b315c55;
+}

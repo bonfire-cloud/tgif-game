@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. Move with **WASD / arrows**, hold **Shift** to sprint, **Space** to throw a ticket. Stations work when reached. Tap/click the floor to move with a pointer. Music starts muted.
+Open http://localhost:5173. Move with **WASD / arrows**, hold **Shift** to sprint, **Space** to throw a ticket. Stations work when reached. Tap/click the floor to move with a pointer. Standard gamepads: **left stick** moves, **RT/R2** sprints, **A/Cross** throws, **Menu/Options** starts the next round. Press a controller button once to make it visible to the browser. Music starts muted.
 
 ```sh
 npm test

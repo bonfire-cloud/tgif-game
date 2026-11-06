@@ -8,6 +8,7 @@ import {
   type ClientMessage,
 } from "../shared/game.js";
 import type { createOffice, Overlay } from "./scene.js";
+import { ControllerInput } from "./controller.js";
 import "./style.css";
 const pathCode = () =>
   location.pathname.match(/^\/room\/([a-f0-9]{6})\/?$/i)?.[1].toUpperCase() ||
@@ -67,7 +68,8 @@ function App() {
       players: {},
       meetings: [],
     }),
-    [sprinting, setSprinting] = useState(false);
+    [sprinting, setSprinting] = useState(false),
+    [controllerConnected, setControllerConnected] = useState(false);
   const canvas = useRef<HTMLCanvasElement>(null),
     office = useRef<ReturnType<typeof createOffice> | null>(null),
     socket = useRef<WebSocket | null>(null),
@@ -227,6 +229,8 @@ function App() {
   }, [joined]);
   useEffect(() => {
     if (!joined) return;
+    const controller = new ControllerInput();
+    let focused = document.hasFocus() && !document.hidden;
     const moves = [
       "w",
       "a",
@@ -253,36 +257,79 @@ function App() {
     };
     const up = (e: KeyboardEvent) => keys.current.delete(e.key.toLowerCase());
     const blur = () => {
+      focused = false;
+      wasMoving = false;
       keys.current.clear();
+      controller.reset();
+      send({ type: "move", x: 0, y: 0 });
+    };
+    const focus = () => {
+      focused = !document.hidden;
+      controller.reset();
+    };
+    const visibility = () =>
+      document.hidden ? blur() : document.hasFocus() && focus();
+    const disconnect = () => {
+      controller.reset();
+      setControllerConnected(false);
       send({ type: "move", x: 0, y: 0 });
     };
     let wasMoving = false;
     const interval = setInterval(() => {
+      if (!focused) return;
+      let pads: (Gamepad | null)[] = [];
+      try {
+        pads = Array.from(navigator.getGamepads?.() || []);
+      } catch {
+        /* Keyboard remains available if gamepads are blocked. */
+      }
+      const pad = controller.poll(pads);
+      setControllerConnected(pad.connected);
       const k = keys.current,
-        x =
+        keyboardX =
           Number(k.has("d") || k.has("arrowright")) -
           Number(k.has("a") || k.has("arrowleft")),
-        y =
+        keyboardY =
           Number(k.has("w") || k.has("arrowup")) -
-          Number(k.has("s") || k.has("arrowdown"));
+          Number(k.has("s") || k.has("arrowdown")),
+        usingKeyboard = !!(keyboardX || keyboardY),
+        x = usingKeyboard ? keyboardX : pad.x,
+        y = usingKeyboard ? keyboardY : pad.y;
       if (x || y || wasMoving)
         send({
           type: "move",
           x,
           y,
-          sprint: k.has("shift") || sprintRef.current,
+          sprint:
+            k.has("shift") ||
+            sprintRef.current ||
+            (!usingKeyboard && pad.sprint),
         });
+      if (pad.toss) send({ type: "throw" });
+      if (
+        pad.menu &&
+        stateRef.current?.phase === "finished" &&
+        deskRef.current !== null
+      )
+        send({ type: "rematch" });
       wasMoving = !!(x || y);
     }, 50);
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
     window.addEventListener("blur", blur);
+    window.addEventListener("focus", focus);
+    window.addEventListener("gamepaddisconnected", disconnect);
+    document.addEventListener("visibilitychange", visibility);
     return () => {
       clearInterval(interval);
       keys.current.clear();
+      controller.reset();
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
       window.removeEventListener("blur", blur);
+      window.removeEventListener("focus", focus);
+      window.removeEventListener("gamepaddisconnected", disconnect);
+      document.removeEventListener("visibilitychange", visibility);
     };
   }, [joined]);
   async function copy() {
@@ -487,10 +534,12 @@ function App() {
             >
               <canvas
                 ref={canvas}
-                aria-label="Office runner. Move with WASD or arrows. Hold Shift to sprint. Space throws your ticket. Tap the floor to move."
+                aria-label="Office runner. Move with WASD, arrows or controller left stick. Shift or RT/R2 sprints. Space or A/Cross throws. Tap the floor to move."
               />
               <div className="table-caption">
-                WASD / arrows to run · Shift to sprint · Space to throw
+                {controllerConnected
+                  ? "Controller connected · Left stick to run · RT/R2 sprint · A/Cross throw"
+                  : "WASD / arrows to run · Shift to sprint · Space to throw · Controllers supported"}
               </div>
               {overlay.stations.map((p, i) => (
                 <button
@@ -540,7 +589,7 @@ function App() {
               {overlay.meetings.map((p, i) => (
                 <span
                   key={i}
-                  className="meeting-label"
+                  className={`meeting-label ${state?.hazards[i]?.chasing ? "chasing" : ""}`}
                   style={{ left: p.x + "%", top: p.y + "%" }}
                 >
                   💬 {state?.hazards[i]?.label}
@@ -690,7 +739,8 @@ function App() {
                       disabled={!ticket || state?.phase === "finished"}
                       onClick={() => send({ type: "throw" })}
                     >
-                      Throw ticket <kbd>Space</kbd>
+                      Throw ticket{" "}
+                      <kbd>{controllerConnected ? "A / Cross" : "Space"}</kbd>
                     </button>
                     <button
                       className="secondary"
@@ -706,7 +756,11 @@ function App() {
                           });
                       }}
                     >
-                      {sprinting ? "⚡ Sprint on" : "⚡ Sprint / Shift"}
+                      {sprinting
+                        ? "⚡ Sprint on"
+                        : controllerConnected
+                          ? "⚡ Sprint / RT"
+                          : "⚡ Sprint / Shift"}
                     </button>
                   </div>
                 </>
@@ -725,18 +779,28 @@ function App() {
           </div>
           <div className="runner-footer">
             <div className="keyboard">
-              <kbd>W</kbd>
+              <kbd>{controllerConnected ? "LS" : "W"}</kbd>
               <span>
-                <kbd>A</kbd>
-                <kbd>S</kbd>
-                <kbd>D</kbd>
+                {controllerConnected ? (
+                  <>
+                    <kbd>A / Cross</kbd>
+                    <kbd>RT / R2</kbd>
+                  </>
+                ) : (
+                  <>
+                    <kbd>A</kbd>
+                    <kbd>S</kbd>
+                    <kbd>D</kbd>
+                  </>
+                )}
               </span>
             </div>
             <p>
               <strong>You’re the little person with the YOU label.</strong>
               <span>
-                Run into the glowing station. Stay a moment to process your
-                ticket. Avoid pink meetings.
+                {controllerConnected
+                  ? "Left stick moves. RT/R2 sprints. A/Cross throws. Menu/Options starts the next round."
+                  : "Run into glowing stations. Controllers: press a button to connect, then use the left stick."}
               </span>
             </p>
             <button className="secondary" onClick={() => setHelp((v) => !v)}>
@@ -750,7 +814,9 @@ function App() {
                 <p>
                   Follow your ticket’s route. Stations work automatically when
                   you reach them. Throw a ticket toward a colleague for a
-                  hand-off. Solo works too: every station is always open.
+                  hand-off. Solo works too: every station is always open.{" "}
+                  Controllers: left stick moves, RT/R2 sprints, A/Cross throws,
+                  and Menu/Options starts another round after the Retro.
                 </p>
               </div>
               <button className="secondary" onClick={() => setHelp(false)}>

@@ -101,6 +101,7 @@ export type Meeting = {
   y: number;
   r: number;
   label: string;
+  chasing: boolean;
 };
 export type GameEvent = {
   id: number;

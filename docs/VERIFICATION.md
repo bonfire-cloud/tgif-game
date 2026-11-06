@@ -26,3 +26,9 @@ The final evidence / tuning commit runs the same pipeline. GitHub Actions owns d
 ## Practical limits
 
 Free Render hosting can cold-start after inactivity. Rooms are in memory and reset on restart / deploy. The music is the original rough 35-second cue, currently looping. Gameplay balance still benefits from a Friday playtest with real coworkers.
+
+## Controller and sync-patrol update
+
+The suite now has 22 checks. Controller tests use simulated standard Gamepad API samples: all screen directions, analog speed, diagonal limits, dead zone, malformed axes, D-pad, held sprint, single-press throw / rematch, sparse device slots, unplug / reconnect / focus resets, and feeding decoded controls through the real server movement and throwing contract. Light stick pressure changes walking speed without weakening throws. Physical hardware is a manual check.
+
+Patrol tests cover all six stations and both side aisles, smooth bounded movement, interruption of campers at every station, chasing outer-lane carriers, immunity / escape, five-second grace, staggered multiplayer routes and rematch reset. Solo challenge completion still passes under the revised hazards. Browser QA confirmed keyboard fallback still moves the character, the revised ghost can catch a player near PO, controller instructions render correctly, and no warning/error logs were reported.

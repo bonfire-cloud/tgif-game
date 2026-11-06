@@ -151,3 +151,70 @@ test("pointer sprint changes movement speed without teleporting", () => {
   assert.ok(running.players[0].x > walking.players[0].x + 0.2);
   assert.ok(running.players[0].x < -3);
 });
+
+test("sync patrols cover every station and both outer aisles without teleporting", () => {
+  const r = solo();
+  r.players[0].immunity = 1000;
+  const visited = new Set<number>();
+  let left = false,
+    right = false,
+    previous: { x: number; y: number } | null = null;
+  for (let i = 0; i < 60 * 60; i++) {
+    r.update(1 / 60);
+    const ghost = r.hazards[0];
+    if (!ghost) continue;
+    if (previous) assert.ok(distance(previous, ghost) <= 1.85 / 60 + 0.00001);
+    previous = { x: ghost.x, y: ghost.y };
+    left ||= ghost.x < -4.7;
+    right ||= ghost.x > 4.7;
+    STATIONS.forEach((s) => {
+      if (distance(s, ghost) < 0.95) visited.add(s.id);
+    });
+  }
+  assert.equal(visited.size, 6);
+  assert.ok(left && right);
+});
+test("sync ghosts interrupt campers at all six stations, including the far corners", () => {
+  for (const station of STATIONS) {
+    const r = solo();
+    r.players[0].x = station.x;
+    r.players[0].y = station.y;
+    tick(r, 45);
+    assert.ok(r.meetings > 0, `No meeting reached ${station.label}`);
+  }
+});
+test("chases close in on outer-lane carriers and stop targeting immune players", () => {
+  const r = solo();
+  tick(r, 5.1);
+  const ghost = r.hazards[0],
+    p = r.players[0];
+  p.x = 3;
+  p.y = 2.5;
+  p.immunity = 0;
+  ghost.x = 4.9;
+  ghost.y = 2.75;
+  const before = distance(p, ghost);
+  r.update(0.1);
+  assert.ok(ghost.chasing);
+  assert.ok(distance(p, ghost) < before);
+  p.immunity = 4;
+  r.update(0.1);
+  assert.equal(ghost.chasing, false);
+  assert.equal(r.meetings, 0);
+});
+test("ghosts keep the initial grace period, stagger their routes and reset on rematch", () => {
+  const r = solo();
+  tick(r, 4.9);
+  assert.equal(r.hazards.length, 0);
+  r.join("two", "Two");
+  r.join("three", "Three");
+  r.join("four", "Four");
+  tick(r, 0.2);
+  assert.equal(r.hazards.length, 2);
+  assert.ok(distance(r.hazards[0], r.hazards[1]) > 8);
+  r.phase = "finished";
+  r.rematch();
+  assert.equal(r.hazards.length, 0);
+  tick(r, 4);
+  assert.equal(r.hazards.length, 0);
+});

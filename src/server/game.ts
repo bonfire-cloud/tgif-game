@@ -11,6 +11,19 @@ import {
   type Snapshot,
   type Meeting,
 } from "../shared/game.js";
+
+// Visit the station rows and side aisles, rather than circling the centre.
+const MEETING_PATROL = [
+  { x: -4.55, y: -2.75 },
+  { x: 0, y: -2.65 },
+  { x: 4.55, y: -2.75 },
+  { x: 4.9, y: 0 },
+  { x: 4.55, y: 2.75 },
+  { x: 0, y: 2.65 },
+  { x: -4.55, y: 2.75 },
+  { x: -4.9, y: 0 },
+];
+
 export class Room {
   players: Player[] = [];
   builds: Build[] = [];
@@ -30,6 +43,7 @@ export class Room {
   capacity = 2;
   lastActive = Date.now();
   started = false;
+  private meetingWaypoints = new Map<number, number>();
   constructor(public code: string) {}
   event(
     text: string,
@@ -186,6 +200,7 @@ export class Room {
     this.walked = 0;
     this.builds = [];
     this.hazards = [];
+    this.meetingWaypoints.clear();
     this.capacity = trafficFor(this.players.length);
     this.target = Math.max(5, this.players.length * 3);
     this.spawnClock = 0;
@@ -215,29 +230,7 @@ export class Room {
       return;
     }
     const elapsed = ROUND_SECONDS - this.remaining;
-    this.hazards =
-      elapsed < 5
-        ? []
-        : [
-            {
-              id: 0,
-              x: Math.sin(elapsed * 0.46) * 2.9,
-              y: Math.cos(elapsed * 0.31) * 0.95,
-              r: 0.86,
-              label: "Quick sync?",
-            },
-            ...(this.players.length >= 4
-              ? [
-                  {
-                    id: 1,
-                    x: Math.cos(elapsed * 0.38 + 2) * 3.1,
-                    y: Math.sin(elapsed * 0.43) * 1.2,
-                    r: 0.8,
-                    label: "Got a minute?",
-                  },
-                ]
-              : []),
-          ];
+    this.updateMeetings(elapsed, dt);
     this.trafficClock += dt;
     if (this.trafficClock >= 5) {
       this.trafficClock = 0;
@@ -306,9 +299,10 @@ export class Room {
         const moved = Math.hypot(p.x - ox, p.y - oy);
         p.walked += moved;
         this.walked += moved;
-        if (Math.hypot(ix, iy) > 0.1) {
-          p.facingX = ix;
-          p.facingY = iy;
+        const directionLength = Math.hypot(ix, iy);
+        if (directionLength > 0.001) {
+          p.facingX = ix / directionLength;
+          p.facingY = iy / directionLength;
         }
       }
       if (
@@ -386,6 +380,65 @@ export class Room {
         b.y = Math.sign(b.y) * 3.3;
         b.vy *= -0.6;
       }
+    }
+  }
+  private updateMeetings(elapsed: number, dt: number) {
+    if (elapsed < 5) return;
+    const count = this.players.length >= 4 ? 2 : 1;
+    this.hazards = this.hazards.filter((h) => h.id < count);
+    for (const id of this.meetingWaypoints.keys())
+      if (id >= count) this.meetingWaypoints.delete(id);
+    for (let id = 0; id < count; id++) {
+      let ghost = this.hazards.find((h) => h.id === id);
+      if (!ghost) {
+        ghost = {
+          id,
+          x: id === 0 ? 4.9 : -4.9,
+          y: 0,
+          r: id === 0 ? 0.86 : 0.8,
+          label: "",
+          chasing: false,
+        };
+        this.hazards.push(ghost);
+        this.meetingWaypoints.set(id, id === 0 ? 2 : 6);
+      }
+      // Short, staggered chases make station camping unsafe while leaving escape windows.
+      const chaseWindow = (elapsed - 5 + id * 5.5) % 11 < 3;
+      const carrier = chaseWindow
+        ? this.players
+            .filter(
+              (p) =>
+                p.immunity <= 0 &&
+                this.held(p.desk) &&
+                distance(p, ghost!) < 4.4,
+            )
+            .sort((a, b) => distance(a, ghost!) - distance(b, ghost!))[0]
+        : undefined;
+      let waypoint = this.meetingWaypoints.get(id)!;
+      if (!carrier && distance(ghost, MEETING_PATROL[waypoint]) < 0.15) {
+        waypoint =
+          (waypoint + (id === 0 ? 1 : -1) + MEETING_PATROL.length) %
+          MEETING_PATROL.length;
+        this.meetingWaypoints.set(id, waypoint);
+      }
+      const destination = carrier || MEETING_PATROL[waypoint];
+      const dx = destination.x - ghost.x,
+        dy = destination.y - ghost.y;
+      const length = Math.hypot(dx, dy),
+        step = Math.min(length, (carrier ? 2.65 : 1.85) * dt);
+      if (length > 0) {
+        ghost.x = Math.max(-4.9, Math.min(4.9, ghost.x + (dx / length) * step));
+        ghost.y = Math.max(
+          -2.75,
+          Math.min(2.75, ghost.y + (dy / length) * step),
+        );
+      }
+      ghost.chasing = !!carrier;
+      ghost.label = carrier
+        ? `Quick sync, ${carrier.name}?`
+        : id === 0
+          ? "Quick sync?"
+          : "Got a minute?";
     }
   }
   snapshot(): Snapshot {

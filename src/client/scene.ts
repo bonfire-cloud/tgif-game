@@ -598,6 +598,7 @@ export function createOffice(
             head.parent = root;
           }
           m = { root, ring };
+          root.position.set(h.x, 0, h.y);
           meetings.set(h.id, m);
         }
         m.root.position = Vector3.Lerp(

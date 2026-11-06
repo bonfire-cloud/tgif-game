@@ -10,7 +10,7 @@ PO provides tickets. Station vocabulary: PO, Requirements, Refinement, Build, Re
 
 ## Friction and comedy
 
-Pink roaming “Quick sync?” groups briefly stop a runner. A four-second immunity window allows escape. Giant coffee mugs are physical obstacles. Sprinting, route choice, station queues and thrown hand-offs create the challenge. There is no elimination, personal blame meter or separate repair minigame.
+Pink “Quick sync?” ghosts patrol both outer station rows and side aisles. They make short, staggered chases toward nearby ticket carriers, calling out the runner’s name. Patrol speed is 1.85 units/s and chase speed 2.65, below walking (3.5) and sprinting (5.1). The five-second opening grace period remains. Ghosts briefly stop a runner. A four-second immunity window allows escape. Giant coffee mugs are physical obstacles. Sprinting, route choice, station queues and thrown hand-offs create the challenge. There is no elimination, personal blame meter or separate repair minigame.
 
 ## Solo and dynamic multiplayer
 
@@ -25,3 +25,9 @@ Ticket capacity approaches current humans + 1, bounded at 2–10, changing gradu
 ## Feedback
 
 Running limbs, body bounce, carried-ticket pose, dust, roaming meeting groups, speech bubbles, station rings, next-stop arrow, processing progress, approval particles, shipping confetti, arcade callouts and a loud Retro reveal. Music and synthesized event sounds are user controlled and start muted. Reduced motion suppresses decorative effects.
+
+## Controllers
+
+Standard browser gamepads use left-stick direction and proportional tilt speed, with a radial 18% dead zone to prevent drift. D-pad movement is also supported. Hold RT/R2 to sprint, press A/Cross once to throw, and press Menu/Options at the Retro to start another round. The first held activation button does not fire an action. Live controller hints replace keyboard hints when a pad is exposed by the browser.
+
+Keyboard direction takes priority while keys are pressed. Centred sticks leave pointer movement available. Losing focus or disconnecting stops movement; refocusing cannot replay a held action. Each browser player can use their own controller in the same multiplayer room.
