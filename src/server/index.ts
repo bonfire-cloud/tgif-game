@@ -13,6 +13,7 @@ const sockets = new Map<
   {
     room: Room;
     clientId: string;
+    name: string;
     desk: number | null;
     alive: boolean;
     window: number;
@@ -130,6 +131,7 @@ wss.on("connection", (ws) => {
       c = {
         room,
         clientId: m.clientId,
+        name,
         desk,
         alive: true,
         window: Date.now(),
@@ -147,7 +149,7 @@ wss.on("connection", (ws) => {
     }
     if (++c.count > 60) return;
     if (m.type === "claim" && c.desk === null) {
-      c.desk = c.room.join(c.clientId, "Colleague");
+      c.desk = c.room.join(c.clientId, c.name);
       send(ws, { type: "welcome", clientId: c.clientId, desk: c.desk });
     }
     if (m.type === "pass") c.room.pass(c.clientId, m.x, m.y);

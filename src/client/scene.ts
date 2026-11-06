@@ -13,6 +13,7 @@ import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight.js";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator.js";
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent.js";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture.js";
+import "@babylonjs/core/Culling/ray.js";
 import { DESKS, BUMPERS, type Snapshot } from "../shared/game.js";
 export type Point = { x: number; y: number };
 export function createOffice(
@@ -326,8 +327,8 @@ export function createOffice(
   const pick = (e: PointerEvent, fire: boolean) => {
     const bounds = canvas.getBoundingClientRect();
     const ray = scene.createPickingRay(
-      ((e.clientX - bounds.left) * engine.getRenderWidth()) / bounds.width,
-      ((e.clientY - bounds.top) * engine.getRenderHeight()) / bounds.height,
+      e.clientX - bounds.left,
+      e.clientY - bounds.top,
       Matrix.Identity(),
       camera,
     );
