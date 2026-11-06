@@ -38,3 +38,5 @@ Patrol tests cover all six stations and both side aisles, smooth bounded movemen
 The suite now has 26 checks. Four additional checks cover deterministic audio generation, non-silent bounded signals, exact zero score / effect boundaries, distinct effects, quantized amplitude, and station / player identities within the fixed sixteen-colour palette. TypeScript and production build pass.
 
 Local production browser QA confirms the palette shader compiles without warnings or errors; pixel fonts load; clicking the low-resolution canvas reaches Requirements and advances the route to Refinement; CHIP ON activates successfully; and the full Retro renders. The 390-pixel phone layout has no horizontal overflow and keeps the mission and controls readable. The soundtrack preview is regenerated from the same synthesizer as the game with npm run audio:preview. Public deployment continues through the main-branch CI gates described above.
+
+The canvas is positioned inside the arena so changes to its low-resolution drawing buffer cannot feed back into CSS grid sizing. Desktop dimensions stay stable across a phone / desktop resize cycle.
